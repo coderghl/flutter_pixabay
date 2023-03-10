@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class AppTheme {
+class AppThemeState with ChangeNotifier {
   int selColorSchemeSeed = 0;
 
   List<Color> colorSchemeSeedList = [
@@ -19,6 +20,9 @@ class AppTheme {
 
   late ThemeData darkTheme;
 
+  ThemeMode themeMode = ThemeMode.system;
+
+  /// 初始化主题
   void initTheme() {
     lightTheme = ThemeData(
       useMaterial3: true,
@@ -29,7 +33,20 @@ class AppTheme {
     darkTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorSchemeSeed: Colors.green,
+      colorSchemeSeed: colorSchemeSeedList[selColorSchemeSeed],
     );
+  }
+
+  /// 切换主题
+  void toggleThemeSeedColor(int index) {
+    selColorSchemeSeed = index;
+    initTheme();
+    notifyListeners();
+  }
+
+  /// 切换主题模式
+  void toggleThemeMode(ThemeMode themeMode) {
+    this.themeMode = themeMode;
+    notifyListeners();
   }
 }
