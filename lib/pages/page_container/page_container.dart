@@ -25,11 +25,9 @@ class _PageContainerState extends State<PageContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,

@@ -30,7 +30,9 @@ class ListTileM3Widget extends StatelessWidget {
         onLongPress: onLongPress,
         onTap: onTap,
         shape: shape ??
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
         leading: leading,
         trailing: trailing,
         title: title,

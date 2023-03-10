@@ -8,7 +8,7 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.only(left: 24,right: 24,top: 44),
       child: Column(
         children: [
           ListTileM3Widget(
@@ -21,7 +21,7 @@ class SettingPage extends StatelessWidget {
             leading: const Icon(Icons.color_lens_rounded),
             trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             title: const Text("Theme Selection"),
-          )
+          ),
         ],
       ),
     );
