@@ -1,7 +1,10 @@
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/media_type_entity.dart';
 import 'package:flutter_pixabay/enum/media_type_enum.dart';
+import 'package:flutter_pixabay/enum/sort_enum.dart';
 import 'package:flutter_pixabay/pages/home/widgets/home_tab_page_widget.dart';
+import 'package:flutter_pixabay/pages/search/search_page.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,11 +39,15 @@ class _HomePageState extends State<HomePage>
     ),
   ];
 
+  /// data sort type
+  SortEnum dataSortType = SortEnum.foryou;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: mediaTypeList.length,
-      child: NestedScrollView(
+      child: ExtendedNestedScrollView(
+        onlyOneScrollInBody: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
@@ -63,12 +70,10 @@ class _HomePageState extends State<HomePage>
   Widget _buildTabBarView() {
     return TabBarView(
       children: mediaTypeList
-          .map(
-            (item) => KeepAliveWidget(
-              wantKeepAlive: true,
-              child: HomeTabPageWidget(type: item),
-            ),
-          )
+          .map((item) => KeepAliveWidget(
+                wantKeepAlive: true,
+                child: HomeTabPageWidget(type: item),
+              ))
           .toList(),
     );
   }
@@ -81,27 +86,32 @@ class _HomePageState extends State<HomePage>
   Widget _buildSearchBtn() => Hero(
         tag: "searchIcon",
         child: IconButton(
-          onPressed: () {},
+          onPressed: _handelGotoSearchPage,
           icon: const Icon(Icons.search_rounded),
         ),
       );
 
   Widget _buildPopupMenu() => PopupMenuButton(
+        initialValue: dataSortType,
+        onSelected: _handelSortType,
         itemBuilder: (BuildContext context) {
           return const [
-            PopupMenuItem(
+            PopupMenuItem<SortEnum>(
+              value: SortEnum.foryou,
               child: ListTile(
                 leading: Icon(Icons.recommend_rounded),
                 title: Text("For you"),
               ),
             ),
-            PopupMenuItem(
+            PopupMenuItem<SortEnum>(
+              value: SortEnum.latest,
               child: ListTile(
                 leading: Icon(Icons.fiber_new_rounded),
                 title: Text("Latest"),
               ),
             ),
-            PopupMenuItem(
+            PopupMenuItem<SortEnum>(
+              value: SortEnum.trending,
               child: ListTile(
                 leading: Icon(Icons.local_fire_department_rounded),
                 title: Text("Trending"),
@@ -110,4 +120,16 @@ class _HomePageState extends State<HomePage>
           ];
         },
       );
+
+  void _handelSortType(SortEnum value) {
+    dataSortType = value;
+    setState(() {});
+  }
+
+  void _handelGotoSearchPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SearchPage()),
+    );
+  }
 }

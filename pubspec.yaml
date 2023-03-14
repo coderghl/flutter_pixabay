@@ -44,6 +44,8 @@ dependencies:
   shared_preferences: ^2.0.18
   # 网络请求
   dio: ^5.0.1
+  extended_nested_scroll_view: ^6.0.0
+
 
 dev_dependencies:
   flutter_test:
