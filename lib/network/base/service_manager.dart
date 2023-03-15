@@ -18,4 +18,11 @@ class ServiceManager {
     String key = service.serviceKey();
     serviceMap[key] = service;
   }
+
+  Service getService(String serviceKey) {
+    if (serviceMap.containsKey(serviceKey)) {
+      return serviceMap[serviceKey]!;
+    }
+    throw Exception("No Register Service");
+  }
 }
