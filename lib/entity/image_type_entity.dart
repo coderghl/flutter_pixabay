@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pixabay/enum/media_type_enum.dart';
+import 'package:flutter_pixabay/enum/image_type_enum.dart';
 
-class MediaTypeEntity {
-  MediaTypeEntity({
+class ImageTypeEntity {
+  ImageTypeEntity({
     required this.name,
     required this.type,
     this.iconData,
   });
 
   final String name;
-  final MediaTypeEnum type;
+  final ImageTypeEnum type;
   IconData? iconData;
 }

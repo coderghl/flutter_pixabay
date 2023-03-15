@@ -17,7 +17,7 @@ class BaseApi {
     Map<String, dynamic>? query,
     Map<String, dynamic>? body,
     Map<String, dynamic>? header,
-    required Function successCallback,
+    required Function(Map<String, dynamic> data) successCallback,
     required Function errorCallback,
   }) async {
     /// 获取服务
@@ -54,7 +54,8 @@ class BaseApi {
       switch (method()) {
         case RequestMethod.get:
           if (queryParams.isNotEmpty) {
-            response = await dio.get(url, queryParameters: queryParams, options: options);
+            response = await dio.get(url,
+                queryParameters: queryParams, options: options);
           } else {
             response = await dio.get(url, options: options);
           }

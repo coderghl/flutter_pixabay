@@ -1,7 +1,6 @@
-enum MediaTypeEnum {
+enum ImageTypeEnum {
   all,
   photo,
   illustration,
   vector,
-  video,
 }

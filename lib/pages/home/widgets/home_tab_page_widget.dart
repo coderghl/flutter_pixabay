@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pixabay/entity/media_type_entity.dart';
+import 'package:flutter_pixabay/entity/image_entity.dart';
+import 'package:flutter_pixabay/entity/image_type_entity.dart';
+import 'package:flutter_pixabay/network/api/image_api.dart';
+import 'package:flutter_pixabay/network/base/service_manager.dart';
+import 'package:flutter_pixabay/network/service/image_service.dart';
 import 'package:flutter_pixabay/widgets/list_tile_m3_widget.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeTabPageWidget extends StatefulWidget {
   const HomeTabPageWidget({
@@ -8,28 +13,69 @@ class HomeTabPageWidget extends StatefulWidget {
     required this.type,
   });
 
-  final MediaTypeEntity type;
+  final ImageTypeEntity type;
 
   @override
   State<HomeTabPageWidget> createState() => _HomeTabPageWidgetState();
 }
 
 class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
+  ImageApi api = ImageApi();
+
+  ImagePageEntity? pageEntity;
+
+  @override
+  void initState() {
+    initApi();
+    getImage();
+    super.initState();
+  }
+
+  void initApi() {
+    ServiceManager().registerService(ImageService());
+    api.mediaType = widget.type.type;
+    api.initImageTypeUrl();
+  }
+
+  void getImage() {
+    api.request(
+      successCallback: (data) {
+        pageEntity = ImagePageEntity.fromJson(data);
+        print(pageEntity);
+        setState(() {});
+      },
+      errorCallback: (error) {
+        print("error: $error");
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: GridView.builder(
-        key: PageStorageKey<String>(widget.type.name),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 14,
-        ),
-        itemCount: 100,
-        itemBuilder: (context, index) => ListTileM3Widget(
-          title: Text("Item $index"),
-        ),
-      ),
+      child: pageEntity != null
+          ? MasonryGridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 8,
+              key: PageStorageKey<String>(widget.type.name),
+              itemCount: pageEntity!.hits!.length,
+              itemBuilder: (context, index) {
+                var imageEntity = pageEntity!.hits![index];
+                return Container(
+                  height: imageEntity.previewHeight?.toDouble(),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: NetworkImage(imageEntity.webformatUrl!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            )
+          : CircularProgressIndicator(),
     );
   }
 }

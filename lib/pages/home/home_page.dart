@@ -1,8 +1,12 @@
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pixabay/entity/media_type_entity.dart';
-import 'package:flutter_pixabay/enum/media_type_enum.dart';
+import 'package:flutter_pixabay/entity/image_entity.dart';
+import 'package:flutter_pixabay/entity/image_type_entity.dart';
+import 'package:flutter_pixabay/enum/image_type_enum.dart';
 import 'package:flutter_pixabay/enum/sort_enum.dart';
+import 'package:flutter_pixabay/network/api/image_api.dart';
+import 'package:flutter_pixabay/network/base/service_manager.dart';
+import 'package:flutter_pixabay/network/service/image_service.dart';
 import 'package:flutter_pixabay/pages/home/widgets/home_tab_page_widget.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
@@ -17,24 +21,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   /// each tab type
-  List<MediaTypeEntity> mediaTypeList = [
-    MediaTypeEntity(
+  List<ImageTypeEntity> imageTypeList = [
+    ImageTypeEntity(
         name: "All",
-        type: MediaTypeEnum.all,
+        type: ImageTypeEnum.all,
         iconData: Icons.all_inbox_rounded),
-    MediaTypeEntity(
+    ImageTypeEntity(
       name: "Photo",
-      type: MediaTypeEnum.photo,
+      type: ImageTypeEnum.photo,
       iconData: Icons.photo_album_rounded,
     ),
-    MediaTypeEntity(
+    ImageTypeEntity(
       name: "Illustration",
-      type: MediaTypeEnum.illustration,
+      type: ImageTypeEnum.illustration,
       iconData: Icons.brush_rounded,
     ),
-    MediaTypeEntity(
+    ImageTypeEntity(
       name: "Vector",
-      type: MediaTypeEnum.vector,
+      type: ImageTypeEnum.vector,
       iconData: Icons.landscape_rounded,
     ),
   ];
@@ -42,10 +46,14 @@ class _HomePageState extends State<HomePage>
   /// data sort type
   SortEnum dataSortType = SortEnum.foryou;
 
+  /// imageType
+  int currentImageType = 0;
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: mediaTypeList.length,
+      length: imageTypeList.length,
       child: ExtendedNestedScrollView(
         onlyOneScrollInBody: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -69,7 +77,7 @@ class _HomePageState extends State<HomePage>
 
   Widget _buildTabBarView() {
     return TabBarView(
-      children: mediaTypeList
+      children: imageTypeList
           .map((item) => KeepAliveWidget(
                 wantKeepAlive: true,
                 child: HomeTabPageWidget(type: item),
@@ -79,7 +87,8 @@ class _HomePageState extends State<HomePage>
   }
 
   TabBar _buildTabBar() => TabBar(
-      tabs: mediaTypeList
+      onTap: _handelTabOnTap,
+      tabs: imageTypeList
           .map((item) => Tab(text: item.name, icon: Icon(item.iconData)))
           .toList());
 
@@ -131,5 +140,9 @@ class _HomePageState extends State<HomePage>
       context,
       MaterialPageRoute(builder: (context) => SearchPage()),
     );
+  }
+
+  void _handelTabOnTap(int index) {
+    currentImageType = index;
   }
 }
