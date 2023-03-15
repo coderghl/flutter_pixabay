@@ -20,7 +20,8 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        key: PageStorageKey<String>(widget.type.name),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 14,
         ),
