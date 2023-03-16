@@ -4,7 +4,7 @@ import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/network/api/image_api.dart';
 import 'package:flutter_pixabay/network/base/service_manager.dart';
 import 'package:flutter_pixabay/network/service/image_service.dart';
-import 'package:flutter_pixabay/widgets/list_tile_m3_widget.dart';
+import 'package:flutter_pixabay/pages/home/skeleton/home_tab_page_skeleton.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeTabPageWidget extends StatefulWidget {
@@ -26,8 +26,8 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
 
   @override
   void initState() {
-    initApi();
-    getImage();
+    // initApi();
+    // getImage();
     super.initState();
   }
 
@@ -54,28 +54,32 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: pageEntity != null
-          ? MasonryGridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 8,
-              key: PageStorageKey<String>(widget.type.name),
-              itemCount: pageEntity!.hits!.length,
-              itemBuilder: (context, index) {
-                var imageEntity = pageEntity!.hits![index];
-                return Container(
-                  height: imageEntity.previewHeight?.toDouble(),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      image: NetworkImage(imageEntity.webformatUrl!),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                );
-              },
-            )
-          : CircularProgressIndicator(),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 400),
+        child: pageEntity != null ? _buildContent() : HomeTabPageSkeleton(),
+      ),
+    );
+  }
+
+  MasonryGridView _buildContent() {
+    return MasonryGridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 8,
+      itemCount: pageEntity!.hits!.length,
+      itemBuilder: (context, index) {
+        var imageEntity = pageEntity!.hits![index];
+        return Container(
+          height: imageEntity.previewHeight?.toDouble(),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            image: DecorationImage(
+              image: NetworkImage(imageEntity.webformatUrl!),
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
     );
   }
 }
