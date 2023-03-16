@@ -5,6 +5,7 @@ import 'package:flutter_pixabay/network/api/image_api.dart';
 import 'package:flutter_pixabay/network/base/service_manager.dart';
 import 'package:flutter_pixabay/network/service/image_service.dart';
 import 'package:flutter_pixabay/pages/home/skeleton/home_tab_page_skeleton.dart';
+import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeTabPageWidget extends StatefulWidget {
@@ -26,8 +27,8 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
 
   @override
   void initState() {
-    // initApi();
-    // getImage();
+    initApi();
+    getImage();
     super.initState();
   }
 
@@ -69,17 +70,36 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
       itemCount: pageEntity!.hits!.length,
       itemBuilder: (context, index) {
         var imageEntity = pageEntity!.hits![index];
-        return Container(
+        return _buildItem(imageEntity, context, index);
+      },
+    );
+  }
+
+  Widget _buildItem(ImageEntity imageEntity, BuildContext context, int index) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ImageDetailsPage(data: pageEntity!.hits!, index: index)));
+      },
+      child: Hero(
+        tag: imageEntity.webformatUrl!,
+        child: Container(
           height: imageEntity.previewHeight?.toDouble(),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
+            color: Theme.of(context).colorScheme.secondary,
             image: DecorationImage(
               image: NetworkImage(imageEntity.webformatUrl!),
               fit: BoxFit.cover,
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
+
+  void _handelTab() {}
 }
