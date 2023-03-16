@@ -23,7 +23,8 @@ class HomeTabPageWidget extends StatefulWidget {
 class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
   ImageApi api = ImageApi();
 
-  ImagePageEntity? pageEntity;
+  bool dataIsReady = false;
+  late ImagePageEntity pageEntity;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
     api.request(
       successCallback: (data) {
         pageEntity = ImagePageEntity.fromJson(data);
-        print(pageEntity);
+        dataIsReady = true;
         setState(() {});
       },
       errorCallback: (error) {
@@ -57,7 +58,7 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 400),
-        child: pageEntity != null ? _buildContent() : HomeTabPageSkeleton(),
+        child: dataIsReady ? _buildContent() : const HomeTabPageSkeleton(),
       ),
     );
   }
@@ -67,9 +68,9 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
       crossAxisCount: 2,
       mainAxisSpacing: 16,
       crossAxisSpacing: 8,
-      itemCount: pageEntity!.hits!.length,
+      itemCount: pageEntity.imageEntityList.length,
       itemBuilder: (context, index) {
-        var imageEntity = pageEntity!.hits![index];
+        var imageEntity = pageEntity.imageEntityList[index];
         return _buildItem(imageEntity, context, index);
       },
     );
@@ -81,18 +82,18 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    ImageDetailsPage(data: pageEntity!.hits!, index: index)));
+                builder: (context) => ImageDetailsPage(
+                    data: pageEntity.imageEntityList, index: index)));
       },
       child: Hero(
-        tag: imageEntity.webformatUrl!,
+        tag: imageEntity.webformatUrl,
         child: Container(
-          height: imageEntity.previewHeight?.toDouble(),
+          height: imageEntity.previewHeight.toDouble(),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: Theme.of(context).colorScheme.secondary,
             image: DecorationImage(
-              image: NetworkImage(imageEntity.webformatUrl!),
+              image: NetworkImage(imageEntity.webformatUrl),
               fit: BoxFit.cover,
             ),
           ),
