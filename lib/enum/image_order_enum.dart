@@ -1,4 +1,4 @@
-enum SortEnum {
+enum ImageOrderEnum {
   foryou,
   latest,
   trending,

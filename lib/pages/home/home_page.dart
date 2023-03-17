@@ -1,12 +1,8 @@
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/enum/image_type_enum.dart';
-import 'package:flutter_pixabay/enum/sort_enum.dart';
-import 'package:flutter_pixabay/network/api/image_api.dart';
-import 'package:flutter_pixabay/network/base/service_manager.dart';
-import 'package:flutter_pixabay/network/service/image_service.dart';
+import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/pages/home/widgets/home_tab_page_widget.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
@@ -44,7 +40,7 @@ class _HomePageState extends State<HomePage>
   ];
 
   /// data sort type
-  SortEnum dataSortType = SortEnum.foryou;
+  ImageOrderEnum dataSortType = ImageOrderEnum.foryou;
 
   /// imageType
   int currentImageType = 0;
@@ -105,22 +101,22 @@ class _HomePageState extends State<HomePage>
         onSelected: _handelSortType,
         itemBuilder: (BuildContext context) {
           return const [
-            PopupMenuItem<SortEnum>(
-              value: SortEnum.foryou,
+            PopupMenuItem<ImageOrderEnum>(
+              value: ImageOrderEnum.foryou,
               child: ListTile(
                 leading: Icon(Icons.recommend_rounded),
                 title: Text("For you"),
               ),
             ),
-            PopupMenuItem<SortEnum>(
-              value: SortEnum.latest,
+            PopupMenuItem<ImageOrderEnum>(
+              value: ImageOrderEnum.latest,
               child: ListTile(
                 leading: Icon(Icons.fiber_new_rounded),
                 title: Text("Latest"),
               ),
             ),
-            PopupMenuItem<SortEnum>(
-              value: SortEnum.trending,
+            PopupMenuItem<ImageOrderEnum>(
+              value: ImageOrderEnum.trending,
               child: ListTile(
                 leading: Icon(Icons.local_fire_department_rounded),
                 title: Text("Trending"),
@@ -130,7 +126,7 @@ class _HomePageState extends State<HomePage>
         },
       );
 
-  void _handelSortType(SortEnum value) {
+  void _handelSortType(ImageOrderEnum value) {
     dataSortType = value;
     setState(() {});
   }

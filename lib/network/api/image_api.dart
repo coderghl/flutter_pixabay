@@ -1,42 +1,55 @@
+import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/enum/image_type_enum.dart';
-import 'package:flutter_pixabay/network/base/base_api.dart';
-import 'package:flutter_pixabay/network/constants.dart';
-import 'package:flutter_pixabay/network/service/image_service.dart';
+import 'package:flutter_pixabay/network/http/http.dart';
 
-class ImageApi extends BaseApi {
-  ImageTypeEnum mediaType = ImageTypeEnum.all;
-  String apiPath = "";
+class ImageApi {
+  void getImage({
+    required ImageTypeEnum type,
+    ImageOrderEnum order = ImageOrderEnum.foryou,
+    required void Function(Map<String, dynamic> data) successCallback,
+    required void Function(String error) errorCallback,
+  }) {
+    String resultType = _getImageTypeUrl(type);
+    String resultOrder = _getImageOrder(order);
+    Http().request(
+      path: "image_type=$resultType&order=$resultOrder",
+      successCallback: successCallback,
+      errorCallback: errorCallback,
+    );
+  }
 
-  void initImageTypeUrl() {
-    switch (mediaType) {
-      case ImageTypeEnum.all:
-        apiPath = "${apiKey}&image_type=all";
+  String _getImageOrder(ImageOrderEnum order) {
+    String result = "foryou";
+    switch (order) {
+      case ImageOrderEnum.foryou:
+        result = "foryou";
         break;
-      case ImageTypeEnum.photo:
-        apiPath = "${apiKey}&image_type=photo";
+      case ImageOrderEnum.latest:
+        result = "latest";
         break;
-      case ImageTypeEnum.illustration:
-        apiPath = "${apiKey}&image_type=illustration";
-        break;
-      case ImageTypeEnum.vector:
-        apiPath = "${apiKey}&image_type=vector";
+      case ImageOrderEnum.trending:
+        result = "trending";
         break;
     }
+    return result;
   }
 
-
-  @override
-  String path() {
-    return apiPath;
-  }
-
-  @override
-  RequestMethod method() {
-    return RequestMethod.get;
-  }
-
-  @override
-  String serviceKey() {
-    return imageServiceKey;
+  String _getImageTypeUrl(ImageTypeEnum mediaType) {
+    String type = "all";
+    switch (mediaType) {
+      case ImageTypeEnum.all:
+        type = "all";
+        break;
+      case ImageTypeEnum.photo:
+        type = "photo";
+        break;
+      case ImageTypeEnum.illustration:
+        type = "illustration";
+        break;
+      case ImageTypeEnum.vector:
+        type = "vector";
+        break;
+    }
+    return type;
   }
 }

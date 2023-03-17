@@ -1,10 +1,6 @@
-import 'dart:typed_data';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:flutter_pixabay/network/api/download_api.dart';
 
 class ImageDetailsPage extends StatefulWidget {
   const ImageDetailsPage({
@@ -21,12 +17,14 @@ class ImageDetailsPage extends StatefulWidget {
 }
 
 class _ImageDetailsPageState extends State<ImageDetailsPage> {
-  late PageController controller;
   int _index = 0; // currentPage
+  DownloadApi api = DownloadApi();
+
+  late PageController controller;
 
   late List<Widget> buttonList = [
-    IconButton(onPressed: download, icon: Icon(Icons.file_download_rounded)),
-    IconButton(onPressed: viewOriginalPhoto, icon: Icon(Icons.four_k_outlined)),
+    IconButton(onPressed: _handelDownload, icon: Icon(Icons.file_download_rounded)),
+    IconButton(onPressed: _handelViewOriginalPhoto, icon: Icon(Icons.four_k_outlined)),
     IconButton(onPressed: () {}, icon: Icon(Icons.image_outlined)),
   ];
 
@@ -84,26 +82,22 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
     );
   }
 
-  /// view original photo
-  void viewOriginalPhoto() {
+  void _handelPageChange(int index) {
+    _index = index;
+    setState(() {});
+  }
+
+  void _handelViewOriginalPhoto() {
     Navigator.pop(context);
     widget.data[_index].originalPhoto = true;
     setState(() {});
   }
 
-  /// download
-  void download() async {
-    var response = await Dio().get(widget.data[_index].largeImageUrl,
-        options: Options(responseType: ResponseType.bytes));
-    final result = await ImageGallerySaver.saveImage(
-      Uint8List.fromList(response.data),
-      quality: 60,
-      name: widget.data[_index].largeImageUrl,
-    );
-    if (result["isSuccess"]) {
+  void _handelDownload() async {
+    bool result = await api.downloadImage(url: widget.data[_index].largeImageUrl);
+    if (result) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Download success")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download success")));
     }
   }
 
@@ -113,46 +107,37 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
       onLongPress: _handelOnLongPress,
       onTap: _handelOnTap,
       child: Scaffold(
-        body: SafeArea(
-          child: Stack(
-            children: [
-              PageView.builder(
-                pageSnapping: true,
-                controller: controller,
-                itemCount: widget.data.length,
-                onPageChanged: (index) {
-                  _index = index;
-                  setState(() {});
-                },
-                itemBuilder: (context, index) {
-                  var image = widget.data[index];
-                  return Hero(
-                    tag: image.webformatUrl,
-                    child: InteractiveViewer(
-                      maxScale: 5,
-                      minScale: 1,
-                      child: Image.network(
-                        image.originalPhoto
-                            ? image.largeImageUrl
-                            : image.webformatUrl,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              Align(
-                alignment: Alignment(0, -1),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text("${_index + 1}/${widget.data.length}"),
-                ),
-              ),
-            ],
-          ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("${_index + 1}/${widget.data.length}"),
+          actions: [],
+        ),
+        body: _buildPage(),
+      ),
+    );
+  }
+
+  PageView _buildPage() {
+    return PageView.builder(
+      pageSnapping: true,
+      controller: controller,
+      itemCount: widget.data.length,
+      onPageChanged: _handelPageChange,
+      itemBuilder: (context, index) {
+        var image = widget.data[index];
+        return _buildItem(image);
+      },
+    );
+  }
+
+  Hero _buildItem(ImageEntity image) {
+    return Hero(
+      tag: image.webformatUrl,
+      child: InteractiveViewer(
+        maxScale: 5,
+        minScale: 1,
+        child: Image.network(
+          image.originalPhoto ? image.largeImageUrl : image.webformatUrl,
         ),
       ),
     );

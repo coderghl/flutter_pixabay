@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/network/api/image_api.dart';
-import 'package:flutter_pixabay/network/base/service_manager.dart';
-import 'package:flutter_pixabay/network/service/image_service.dart';
 import 'package:flutter_pixabay/pages/home/skeleton/home_tab_page_skeleton.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -24,43 +22,41 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
   ImageApi api = ImageApi();
 
   bool dataIsReady = false;
+  bool dataIsError = false;
   late ImagePageEntity pageEntity;
 
   @override
   void initState() {
-    initApi();
     getImage();
     super.initState();
   }
 
-  void initApi() {
-    ServiceManager().registerService(ImageService());
-    api.mediaType = widget.type.type;
-    api.initImageTypeUrl();
-  }
-
   void getImage() {
-    api.request(
+    api.getImage(
+      type: widget.type.type,
       successCallback: (data) {
         pageEntity = ImagePageEntity.fromJson(data);
         dataIsReady = true;
         setState(() {});
       },
       errorCallback: (error) {
-        print("error: $error");
+        dataIsError = true;
+        setState(() {});
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 400),
-        child: dataIsReady ? _buildContent() : const HomeTabPageSkeleton(),
-      ),
-    );
+    return dataIsError
+        ? Container()
+        : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              child: dataIsReady ? _buildContent() : const HomeTabPageSkeleton(),
+            ),
+          );
   }
 
   MasonryGridView _buildContent() {
@@ -79,11 +75,8 @@ class _HomeTabPageWidgetState extends State<HomeTabPageWidget> {
   Widget _buildItem(ImageEntity imageEntity, BuildContext context, int index) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ImageDetailsPage(
-                    data: pageEntity.imageEntityList, index: index)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ImageDetailsPage(data: pageEntity.imageEntityList, index: index)));
       },
       child: Hero(
         tag: imageEntity.webformatUrl,
