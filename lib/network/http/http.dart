@@ -53,35 +53,6 @@ class Http {
     }
   }
 
-  Future<bool> download({
-    required String url,
-    Options? options,
-    RequestMethod method = RequestMethod.get,
-    required void Function(Response response) successCallback,
-    required void Function(String error) errorCallback,
-  }) async {
-    Response? response;
-    try {
-      switch (method) {
-        case RequestMethod.get:
-          response = await Dio().get(url, options: options);
-          break;
-        case RequestMethod.post:
-          response = await Dio().post(url, options: options);
-          break;
-      }
-    } on DioError catch (error) {
-      errorCallback(errorFactory(error));
-    }
-
-    if (response != null && response.data != null) {
-      successCallback(response);
-      return true;
-    }else{
-      return false;
-    }
-  }
-
   String errorFactory(DioError error) {
     String errorMessage = error.message ?? "";
     switch (error.type) {

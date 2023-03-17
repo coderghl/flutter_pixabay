@@ -6,13 +6,14 @@ class ImageApi {
   void getImage({
     required ImageTypeEnum type,
     ImageOrderEnum order = ImageOrderEnum.foryou,
+    required int page,
     required void Function(Map<String, dynamic> data) successCallback,
     required void Function(String error) errorCallback,
   }) {
     String resultType = _getImageTypeUrl(type);
     String resultOrder = _getImageOrder(order);
     Http().request(
-      path: "image_type=$resultType&order=$resultOrder",
+      path: "image_type=$resultType&order=$resultOrder&page=$page",
       successCallback: successCallback,
       errorCallback: errorCallback,
     );

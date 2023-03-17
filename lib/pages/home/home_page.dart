@@ -16,7 +16,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  /// each tab type
+  late TabController _tabController;
+  late PageController _pageController;
+
+  ImageOrderEnum dataSortType = ImageOrderEnum.foryou;
+
+  int currentIndex = 0;
+
+  List<GlobalKey<HomeTabPageWidgetState>> keys = [
+    GlobalKey(debugLabel: "all"),
+    GlobalKey(debugLabel: "photo"),
+    GlobalKey(debugLabel: "illustration"),
+    GlobalKey(debugLabel: "vector"),
+  ];
+
   List<ImageTypeEntity> imageTypeList = [
     ImageTypeEntity(
         name: "All",
@@ -39,50 +52,64 @@ class _HomePageState extends State<HomePage>
     ),
   ];
 
-  /// data sort type
-  ImageOrderEnum dataSortType = ImageOrderEnum.foryou;
+  @override
+  void initState() {
+    _tabController = TabController(
+      initialIndex: currentIndex,
+      length: imageTypeList.length,
+      vsync: this,
+    );
+    _pageController = PageController(initialPage: currentIndex);
+    super.initState();
+  }
 
-  /// imageType
-  int currentImageType = 0;
-
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: imageTypeList.length,
-      child: ExtendedNestedScrollView(
-        onlyOneScrollInBody: true,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              floating: true,
-              snap: true,
-              title: const Text("Pixabay"),
-              bottom: _buildTabBar(),
-              actions: [
-                _buildSearchBtn(),
-                _buildPopupMenu(),
-              ],
-            ),
-          ];
-        },
-        body: _buildTabBarView(),
-      ),
+    return ExtendedNestedScrollView(
+      onlyOneScrollInBody: true,
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            title: const Text("Pixabay"),
+            bottom: _buildTabBar(),
+            actions: [
+              _buildSearchBtn(),
+              _buildPopupMenu(),
+            ],
+          ),
+        ];
+      },
+      body: _buildTabBarView(),
     );
   }
 
   Widget _buildTabBarView() {
-    return TabBarView(
-      children: imageTypeList
-          .map((item) => KeepAliveWidget(
-                wantKeepAlive: true,
-                child: HomeTabPageWidget(type: item),
-              ))
-          .toList(),
+    return PageView.builder(
+      onPageChanged: _handelPageChange,
+      itemCount: imageTypeList.length,
+      controller: _pageController,
+      itemBuilder: (BuildContext context, int index) {
+        return KeepAliveWidget(
+          wantKeepAlive: true,
+          child: HomeTabPageWidget(
+            key: keys[index],
+            type: imageTypeList[index],
+          ),
+        );
+      },
     );
   }
 
   TabBar _buildTabBar() => TabBar(
+      controller: _tabController,
       onTap: _handelTabOnTap,
       tabs: imageTypeList
           .map((item) => Tab(text: item.name, icon: Icon(item.iconData)))
@@ -128,6 +155,7 @@ class _HomePageState extends State<HomePage>
 
   void _handelSortType(ImageOrderEnum value) {
     dataSortType = value;
+    keys[currentIndex].currentState?.getImage(dataSortType);
     setState(() {});
   }
 
@@ -139,6 +167,20 @@ class _HomePageState extends State<HomePage>
   }
 
   void _handelTabOnTap(int index) {
-    currentImageType = index;
+    currentIndex = index;
+    _pageController.animateToPage(
+      currentIndex,
+      duration: Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _handelPageChange(int index) {
+    currentIndex = index;
+    _tabController.animateTo(
+      currentIndex,
+      duration: Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
   }
 }

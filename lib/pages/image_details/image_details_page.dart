@@ -95,9 +95,11 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
 
   void _handelDownload() async {
     bool result = await api.downloadImage(url: widget.data[_index].largeImageUrl);
+    Navigator.pop(context);
     if (result) {
-      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download success")));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download fail")));
     }
   }
 
