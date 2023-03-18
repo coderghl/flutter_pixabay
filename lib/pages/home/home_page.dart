@@ -1,7 +1,6 @@
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
-import 'package:flutter_pixabay/enum/image_type_enum.dart';
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/pages/home/widgets/home_tab_page_widget.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
@@ -28,28 +27,6 @@ class _HomePageState extends State<HomePage>
     GlobalKey(debugLabel: "photo"),
     GlobalKey(debugLabel: "illustration"),
     GlobalKey(debugLabel: "vector"),
-  ];
-
-  List<ImageTypeEntity> imageTypeList = [
-    ImageTypeEntity(
-        name: "All",
-        type: ImageTypeEnum.all,
-        iconData: Icons.all_inbox_rounded),
-    ImageTypeEntity(
-      name: "Photo",
-      type: ImageTypeEnum.photo,
-      iconData: Icons.photo_album_rounded,
-    ),
-    ImageTypeEntity(
-      name: "Illustration",
-      type: ImageTypeEnum.illustration,
-      iconData: Icons.brush_rounded,
-    ),
-    ImageTypeEntity(
-      name: "Vector",
-      type: ImageTypeEnum.vector,
-      iconData: Icons.landscape_rounded,
-    ),
   ];
 
   @override

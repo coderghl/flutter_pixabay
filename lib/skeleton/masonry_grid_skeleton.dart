@@ -3,14 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class HomeTabPageSkeleton extends StatefulWidget {
-  const HomeTabPageSkeleton({Key? key}) : super(key: key);
+class MasonryGridSkeleton extends StatefulWidget {
+  const MasonryGridSkeleton({Key? key}) : super(key: key);
 
   @override
-  State<HomeTabPageSkeleton> createState() => _HomeTabPageSkeletonState();
+  State<MasonryGridSkeleton> createState() => _MasonryGridSkeletonState();
 }
 
-class _HomeTabPageSkeletonState extends State<HomeTabPageSkeleton> with SingleTickerProviderStateMixin {
+class _MasonryGridSkeletonState extends State<MasonryGridSkeleton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> animation;
 
@@ -23,7 +24,8 @@ class _HomeTabPageSkeletonState extends State<HomeTabPageSkeleton> with SingleTi
     );
     animation = Tween(begin: -1.0, end: 2.0).animate(_controller);
     animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+      if (status == AnimationStatus.completed ||
+          status == AnimationStatus.dismissed) {
         _controller.repeat(reverse: true);
       } else if (status == AnimationStatus.dismissed) {
         _controller.forward();
@@ -44,7 +46,7 @@ class _HomeTabPageSkeletonState extends State<HomeTabPageSkeleton> with SingleTi
       crossAxisCount: 2,
       mainAxisSpacing: 16,
       crossAxisSpacing: 8,
-      itemCount: 10,
+      itemCount: 20,
       itemBuilder: (BuildContext context, int index) {
         var height = Random().nextDouble() * 150 + 50;
         return AnimatedBuilder(

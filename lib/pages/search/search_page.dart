@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/pages/search/widgets/search_history_widget.dart';
+import 'package:flutter_pixabay/pages/search/widgets/search_result_widget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -10,6 +12,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late TextEditingController _searchController;
+  bool isSearch = false;
+
   @override
   void initState() {
     _searchController = TextEditingController();
@@ -22,15 +26,39 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+  void _handelSearch() {
+    if (_searchController.text.isEmpty) return;
+    isSearch = true;
+    setState(() {});
+  }
+
+  void _cancelSearch() {
+    _searchController.clear();
+    isSearch = false;
+    setState(() {});
+  }
+
+  void _responseSearchTextFieldChange(value) {
+    if (_searchController.text.isEmpty) {
+      _cancelSearch();
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: SearchHistoryWidget(
-          callback: (String value) {},
-        ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 400),
+        child: isSearch
+            ? SearchResultWidget(
+                keyWords: _searchController.text,
+                type: imageTypeList.first,
+              )
+            : SearchHistoryWidget(
+                callback: (String value) {},
+              ),
       ),
     );
   }
@@ -39,7 +67,10 @@ class _SearchPageState extends State<SearchPage> {
     return AppBar(
       title: _buildSearchTextField(),
       actions: [
-        TextButton(onPressed: () {}, child: const Text("Search")),
+        TextButton(
+          onPressed: _handelSearch,
+          child: const Text("Search"),
+        ),
       ],
     );
   }
@@ -47,13 +78,21 @@ class _SearchPageState extends State<SearchPage> {
   TextField _buildSearchTextField() {
     return TextField(
       controller: _searchController,
+      onChanged: _responseSearchTextFieldChange,
+      textInputAction: TextInputAction.search,
+      onSubmitted: (v) => _handelSearch(),
       decoration: InputDecoration(
         hintText: "Search",
+        suffixIcon: _searchController.text.isEmpty
+            ? null
+            : IconButton(
+                onPressed: _cancelSearch,
+                icon: const Icon(Icons.close_rounded),
+              ),
         contentPadding: const EdgeInsets.only(
           top: 0,
           bottom: 0,
           left: 24,
-          right: 24,
         ),
         filled: true,
         border: OutlineInputBorder(

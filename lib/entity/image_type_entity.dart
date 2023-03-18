@@ -12,3 +12,23 @@ class ImageTypeEntity {
   final ImageTypeEnum type;
   IconData? iconData;
 }
+
+List<ImageTypeEntity> imageTypeList = [
+  ImageTypeEntity(
+      name: "All", type: ImageTypeEnum.all, iconData: Icons.all_inbox_rounded),
+  ImageTypeEntity(
+    name: "Photo",
+    type: ImageTypeEnum.photo,
+    iconData: Icons.photo_album_rounded,
+  ),
+  ImageTypeEntity(
+    name: "Illustration",
+    type: ImageTypeEnum.illustration,
+    iconData: Icons.brush_rounded,
+  ),
+  ImageTypeEntity(
+    name: "Vector",
+    type: ImageTypeEnum.vector,
+    iconData: Icons.landscape_rounded,
+  ),
+];

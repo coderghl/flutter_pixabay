@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
-import 'package:flutter_pixabay/enum/image_order_enum.dart';
-import 'package:flutter_pixabay/utils/network/api/image_api.dart';
-import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
+import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
+import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class HomeTabPageWidget extends StatefulWidget {
-  HomeTabPageWidget({
+class SearchResultWidget extends StatefulWidget {
+  const SearchResultWidget({
     super.key,
+    required this.keyWords,
     required this.type,
   });
-
+  final String keyWords;
   final ImageTypeEntity type;
 
   @override
-  State<HomeTabPageWidget> createState() => HomeTabPageWidgetState();
+  State<SearchResultWidget> createState() => SearchResultWidgetState();
 }
 
-class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
+class SearchResultWidgetState extends State<SearchResultWidget> {
   late ImagePageEntity pageEntity;
-  late ImageOrderEnum order;
 
   ImageApi api = ImageApi();
   bool dataIsReady = false;
@@ -32,19 +31,18 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
 
   @override
   void initState() {
-    getImage(ImageOrderEnum.foryou);
+    _getImage();
     super.initState();
   }
 
-  void getImage(ImageOrderEnum order) {
-    this.order = order;
+  void _getImage() {
     dataIsReady = false;
     dataIsError = false;
     page = 1;
     api.getImage(
       page: page,
-      order: this.order,
       type: widget.type.type,
+      keyWords: widget.keyWords,
       successCallback: (data) {
         pageEntity = ImagePageEntity.fromJson(data);
         dataIsReady = true;
@@ -52,7 +50,7 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
       },
       errorCallback: (error) {
         dataIsError = true;
-        setState(() {});
+        print("search Result error: $error");
       },
     );
   }
@@ -62,8 +60,8 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
     page++;
     api.getImage(
       page: page,
-      order: order,
       type: widget.type.type,
+      keyWords: widget.keyWords,
       successCallback: (data) {
         var newData = ImagePageEntity.fromJson(data);
         pageEntity.imageEntityList.addAll(newData.imageEntityList);
@@ -82,7 +80,11 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
     return dataIsError
         ? Container()
         : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 24,
+            ),
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 400),
               child:
@@ -112,10 +114,14 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ImageDetailsPage(
-                    data: pageEntity.imageEntityList, index: index)));
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageDetailsPage(
+              data: pageEntity.imageEntityList,
+              index: index,
+            ),
+          ),
+        );
       },
       child: Hero(
         tag: imageEntity.webformatUrl,
@@ -133,6 +139,4 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
       ),
     );
   }
-
-  void _handelTab() {}
 }
