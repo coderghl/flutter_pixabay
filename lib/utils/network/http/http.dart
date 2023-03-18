@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_pixabay/network/constants.dart';
+import 'package:flutter_pixabay/utils/constants.dart';
 
 enum RequestMethod { get, post, put, delete, patch, copy }
 
@@ -15,7 +15,7 @@ class Http {
 
   Http._internal() {
     BaseOptions options = BaseOptions(
-      baseUrl: "$baseUrl$apiKey&",
+      baseUrl: "$kBaseUrl$kApiKey&",
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     );
@@ -36,10 +36,12 @@ class Http {
     try {
       switch (method) {
         case RequestMethod.get:
-          response = await _dio.get(path, data: body, queryParameters: queryParameters, options: options);
+          response = await _dio.get(path,
+              data: body, queryParameters: queryParameters, options: options);
           break;
         case RequestMethod.post:
-          response = await _dio.post(path, data: body, queryParameters: queryParameters, options: options);
+          response = await _dio.post(path,
+              data: body, queryParameters: queryParameters, options: options);
           break;
       }
     } on DioError catch (error) {

@@ -1,6 +1,6 @@
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/enum/image_type_enum.dart';
-import 'package:flutter_pixabay/network/http/http.dart';
+import 'package:flutter_pixabay/utils/network/http/http.dart';
 
 class ImageApi {
   void getImage({

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
-import 'package:flutter_pixabay/network/api/image_api.dart';
+import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_pixabay/pages/home/skeleton/home_tab_page_skeleton.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -98,7 +98,7 @@ class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
       crossAxisSpacing: 8,
       itemCount: pageEntity.imageEntityList.length + 1,
       itemBuilder: (context, index) {
-        if(pageEntity.imageEntityList.length == index){
+        if (pageEntity.imageEntityList.length == index) {
           loadMore();
           return SizedBox();
         }

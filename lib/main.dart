@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/global.dart';
 import 'package:flutter_pixabay/pages/page_container/page_container.dart';
-import 'package:flutter_pixabay/theme/app_theme_state.dart';
+import 'package:flutter_pixabay/utils/theme/app_theme_state.dart';
 import 'package:provider/provider.dart';
 
 void main() => Global.init().then(

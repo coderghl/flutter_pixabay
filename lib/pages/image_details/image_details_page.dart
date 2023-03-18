@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
-import 'package:flutter_pixabay/network/api/download_api.dart';
+import 'package:flutter_pixabay/utils/network/api/download_api.dart';
 
 class ImageDetailsPage extends StatefulWidget {
   const ImageDetailsPage({
@@ -23,8 +23,10 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   late PageController controller;
 
   late List<Widget> buttonList = [
-    IconButton(onPressed: _handelDownload, icon: Icon(Icons.file_download_rounded)),
-    IconButton(onPressed: _handelViewOriginalPhoto, icon: Icon(Icons.four_k_outlined)),
+    IconButton(
+        onPressed: _handelDownload, icon: Icon(Icons.file_download_rounded)),
+    IconButton(
+        onPressed: _handelViewOriginalPhoto, icon: Icon(Icons.four_k_outlined)),
     IconButton(onPressed: () {}, icon: Icon(Icons.image_outlined)),
   ];
 
@@ -94,12 +96,15 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   }
 
   void _handelDownload() async {
-    bool result = await api.downloadImage(url: widget.data[_index].largeImageUrl);
+    bool result =
+        await api.downloadImage(url: widget.data[_index].largeImageUrl);
     Navigator.pop(context);
     if (result) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download success")));
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download fail")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Download success")));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Download fail")));
     }
   }
 

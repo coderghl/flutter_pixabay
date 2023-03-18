@@ -3,14 +3,14 @@ import 'package:flutter_pixabay/global.dart';
 import 'package:flutter_pixabay/pages/theme/widgets/select_theme_seed_color_widget.dart';
 import 'package:flutter_pixabay/widgets/list_tile_m3_widget.dart';
 
-class SelectThemePage extends StatefulWidget {
-  const SelectThemePage({super.key});
+class AppThemePage extends StatefulWidget {
+  const AppThemePage({super.key});
 
   @override
-  State<SelectThemePage> createState() => _SelectThemePageState();
+  State<AppThemePage> createState() => _AppThemePageState();
 }
 
-class _SelectThemePageState extends State<SelectThemePage> {
+class _AppThemePageState extends State<AppThemePage> {
   late Brightness brightness;
 
   @override
@@ -23,7 +23,7 @@ class _SelectThemePageState extends State<SelectThemePage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Select Theme"),
+        title: const Text("Theme"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
