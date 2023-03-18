@@ -30,6 +30,12 @@ class SharedPreferencesUtil {
 
   dynamic getJson(String key) => jsonDecode(_prefs.getString(key) ?? "");
 
+  Future<bool> setInt(String key, int value) async {
+    return await _prefs.setInt(key, value);
+  }
+
+  int getInt(String key) => _prefs.getInt(key) ?? 0;
+
   Future<bool> remove(String key) async {
     return await _prefs.remove(key);
   }

@@ -31,36 +31,40 @@ class _AppThemePageState extends State<AppThemePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Toggle Theme Mode",
+              "Toggle theme mode",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            ListTileM3Widget(
-              title: Text(brightness == Brightness.light ? "Light" : "Dark"),
-              margin: const EdgeInsets.only(bottom: 26),
-              leading: brightness == Brightness.light
-                  ? Icon(Icons.wb_sunny_rounded)
-                  : Icon(Icons.dark_mode_rounded),
-              trailing: Switch(
-                value: brightness == Brightness.light,
-                onChanged: (bool value) {
-                  if (value) {
-                    brightness = Brightness.light;
-                    Global.appTheme.toggleThemeMode(ThemeMode.light);
-                  } else {
-                    brightness = Brightness.dark;
-                    Global.appTheme.toggleThemeMode(ThemeMode.dark);
-                  }
-                  setState(() {});
-                },
-              ),
-            ),
+            _buildToggleThemeMode(),
             const SelectThemeSeedColorWidget(),
           ],
         ),
+      ),
+    );
+  }
+
+  ListTileM3Widget _buildToggleThemeMode() {
+    return ListTileM3Widget(
+      title: Text(brightness == Brightness.light ? "Light" : "Dark"),
+      margin: const EdgeInsets.only(bottom: 26),
+      leading: brightness == Brightness.light
+          ? const Icon(Icons.wb_sunny_rounded)
+          : const Icon(Icons.dark_mode_rounded),
+      trailing: Switch(
+        value: brightness == Brightness.light,
+        onChanged: (bool value) {
+          if (value) {
+            brightness = Brightness.light;
+            Global.appTheme.toggleThemeMode(ThemeMode.light);
+          } else {
+            brightness = Brightness.dark;
+            Global.appTheme.toggleThemeMode(ThemeMode.dark);
+          }
+          setState(() {});
+        },
       ),
     );
   }

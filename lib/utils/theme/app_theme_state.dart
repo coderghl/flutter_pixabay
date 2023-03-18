@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pixabay/utils/constants.dart';
+import 'package:flutter_pixabay/utils/shared_preferences/shared_preferences_util.dart';
 
 class AppThemeState with ChangeNotifier {
   int selColorSchemeSeed = 0;
@@ -21,8 +23,9 @@ class AppThemeState with ChangeNotifier {
 
   ThemeMode themeMode = ThemeMode.system;
 
-  /// 初始化主题
-  void initTheme() {
+  Future<void> initTheme() async {
+    selColorSchemeSeed = SharedPreferencesUtil().getInt(kCurrentColor);
+
     lightTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -36,9 +39,8 @@ class AppThemeState with ChangeNotifier {
     );
   }
 
-  /// 切换主题
   void toggleThemeSeedColor(int index) {
-    selColorSchemeSeed = index;
+    SharedPreferencesUtil().setInt(kCurrentColor, index);
     initTheme();
     notifyListeners();
   }

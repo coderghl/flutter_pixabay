@@ -43,6 +43,18 @@ class Http {
           response = await _dio.post(path,
               data: body, queryParameters: queryParameters, options: options);
           break;
+        case RequestMethod.put:
+          // TODO: Handle this case.
+          break;
+        case RequestMethod.delete:
+          // TODO: Handle this case.
+          break;
+        case RequestMethod.patch:
+          // TODO: Handle this case.
+          break;
+        case RequestMethod.copy:
+          // TODO: Handle this case.
+          break;
       }
     } on DioError catch (error) {
       errorCallback(errorFactory(error));

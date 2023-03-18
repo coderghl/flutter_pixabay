@@ -9,8 +9,10 @@ class Global {
 
   static Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
-    appTheme.initTheme();
+
     Http();
     await SharedPreferencesUtil.init();
+
+    await appTheme.initTheme();
   }
 }
