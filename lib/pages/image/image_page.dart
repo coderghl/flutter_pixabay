@@ -2,27 +2,27 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
-import 'package:flutter_pixabay/pages/home/widgets/home_tab_page_widget.dart';
+import 'package:flutter_pixabay/pages/image/widgets/image_tab_page_widget.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class ImagePage extends StatefulWidget {
+  const ImagePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ImagePage> createState() => _ImagePageState();
 }
 
-class _HomePageState extends State<HomePage>
+class _ImagePageState extends State<ImagePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late PageController _pageController;
 
   ImageOrderEnum dataSortType = ImageOrderEnum.foryou;
 
-  int currentIndex = 0;
+  int _currentIndex = 0;
 
-  List<GlobalKey<HomeTabPageWidgetState>> keys = [
+  List<GlobalKey<ImageTabPageWidgetState>> keys = [
     GlobalKey(debugLabel: "all"),
     GlobalKey(debugLabel: "photo"),
     GlobalKey(debugLabel: "illustration"),
@@ -32,11 +32,11 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: currentIndex,
+      initialIndex: _currentIndex,
       length: imageTypeList.length,
       vsync: this,
     );
-    _pageController = PageController(initialPage: currentIndex);
+    _pageController = PageController(initialPage: _currentIndex);
     super.initState();
   }
 
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage>
       itemBuilder: (BuildContext context, int index) {
         return KeepAliveWidget(
           wantKeepAlive: true,
-          child: HomeTabPageWidget(
+          child: ImageTabPageWidget(
             key: keys[index],
             type: imageTypeList[index],
           ),
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage>
 
   void _handelSortType(ImageOrderEnum value) {
     dataSortType = value;
-    keys[currentIndex].currentState?.getImage(dataSortType);
+    keys[_currentIndex].currentState?.getImage(dataSortType);
     setState(() {});
   }
 
@@ -144,20 +144,20 @@ class _HomePageState extends State<HomePage>
   }
 
   void _handelTabOnTap(int index) {
-    currentIndex = index;
+    _currentIndex = index;
     _pageController.animateToPage(
-      currentIndex,
-      duration: Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
+      _currentIndex,
+      duration: Duration(milliseconds: 200),
+      curve: Curves.ease,
     );
   }
 
   void _handelPageChange(int index) {
-    currentIndex = index;
+    _currentIndex = index;
     _tabController.animateTo(
-      currentIndex,
-      duration: Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
+      _currentIndex,
+      duration: Duration(milliseconds: 200),
+      curve: Curves.ease,
     );
   }
 }

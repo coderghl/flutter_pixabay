@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/pages/setting/setting_page.dart';
 import 'package:flutter_pixabay/pages/category/category_page.dart';
-import 'package:flutter_pixabay/pages/home/home_page.dart';
+import 'package:flutter_pixabay/pages/image/image_page.dart';
+import 'package:flutter_pixabay/pages/video/video_page.dart';
 
 class PageContainer extends StatefulWidget {
   const PageContainer({super.key});
@@ -14,7 +15,8 @@ class _PageContainerState extends State<PageContainer> {
   int _currentIndex = 0;
 
   final _pages = const [
-    HomePage(),
+    ImagePage(),
+    VideoPage(),
     CategoryPage(),
     SettingPage(),
   ];
@@ -34,8 +36,12 @@ class _PageContainerState extends State<PageContainer> {
         onDestinationSelected: switchPage,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.home_rounded),
-            label: "Home",
+            icon: Icon(Icons.image_rounded),
+            label: "Image",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.videocam_rounded),
+            label: "Image",
           ),
           NavigationDestination(
             icon: Icon(Icons.category_rounded),

@@ -7,8 +7,8 @@ import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class HomeTabPageWidget extends StatefulWidget {
-  HomeTabPageWidget({
+class ImageTabPageWidget extends StatefulWidget {
+  ImageTabPageWidget({
     super.key,
     required this.type,
   });
@@ -16,10 +16,10 @@ class HomeTabPageWidget extends StatefulWidget {
   final ImageTypeEntity type;
 
   @override
-  State<HomeTabPageWidget> createState() => HomeTabPageWidgetState();
+  State<ImageTabPageWidget> createState() => ImageTabPageWidgetState();
 }
 
-class HomeTabPageWidgetState extends State<HomeTabPageWidget> {
+class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
   late ImagePageEntity pageEntity;
   late ImageOrderEnum order;
 
