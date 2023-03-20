@@ -20,7 +20,7 @@ class VideoPageEntity {
       VideoPageEntity(
         total: json["total"],
         totalHits: json["totalHits"],
-        hits: List<VideoEntity>.from(json["hits"].map((x) => x)),
+        hits: List<VideoEntity>.from(json["hits"].map((x) => VideoEntity.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

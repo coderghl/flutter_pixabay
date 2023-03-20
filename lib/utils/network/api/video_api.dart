@@ -19,6 +19,7 @@ class VideoApi {
 
     Http().request(
       path: path,
+      type: RequestType.video,
       successCallback: successCallback,
       errorCallback: errorCallback,
     );

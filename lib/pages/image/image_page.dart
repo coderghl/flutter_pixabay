@@ -43,12 +43,12 @@ class _ImagePageState extends State<ImagePage>
   @override
   void dispose() {
     _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build");
     return ExtendedNestedScrollView(
       onlyOneScrollInBody: true,
       headerSliverBuilder: (context, innerBoxIsScrolled) {

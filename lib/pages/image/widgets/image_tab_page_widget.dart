@@ -146,6 +146,4 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
       ),
     );
   }
-
-  void _handelTab() {}
 }

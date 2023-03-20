@@ -8,33 +8,43 @@ class SettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24, top: 44),
-      child: Column(
-        children: [
-          ListTileM3Widget(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AppThemePage(),
-              ),
-            ),
-            leading: const Icon(Icons.color_lens_rounded),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            title: const Text("App Theme"),
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            title: Text("Setting"),
+            centerTitle: false,
           ),
-          ListTileM3Widget(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AppAboutPage(),
+        ];
+      },
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          children: [
+            ListTileM3Widget(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AppThemePage(),
+                ),
               ),
+              leading: const Icon(Icons.color_lens_rounded),
+              trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+              title: const Text("App Theme"),
             ),
-            leading: const Icon(Icons.color_lens_rounded),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            title: const Text("About"),
-          ),
-        ],
+            ListTileM3Widget(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AppAboutPage(),
+                ),
+              ),
+              leading: const Icon(Icons.color_lens_rounded),
+              trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+              title: const Text("About"),
+            ),
+          ],
+        ),
       ),
     );
   }

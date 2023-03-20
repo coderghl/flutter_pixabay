@@ -15,7 +15,10 @@ class ImageTypeEntity {
 
 List<ImageTypeEntity> imageTypeList = [
   ImageTypeEntity(
-      name: "All", type: ImageTypeEnum.all, iconData: Icons.all_inbox_rounded),
+    name: "All",
+    type: ImageTypeEnum.all,
+    iconData: Icons.all_inbox_rounded,
+  ),
   ImageTypeEntity(
     name: "Photo",
     type: ImageTypeEnum.photo,
