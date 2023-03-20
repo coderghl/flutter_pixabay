@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_pixabay/utils/constants.dart';
 
 enum RequestMethod { get, post, put, delete, patch, copy }
+
+enum RequestType { image, video }
 
 class Http {
   static final Http _instants = Http._internal();
@@ -15,7 +15,6 @@ class Http {
 
   Http._internal() {
     BaseOptions options = BaseOptions(
-      baseUrl: "$kBaseUrl$kApiKey&",
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     );
@@ -26,12 +25,15 @@ class Http {
   void request({
     required String path,
     Options? options,
+    RequestType type = RequestType.image,
     Map<String, dynamic>? body,
     Map<String, dynamic>? queryParameters,
     RequestMethod method = RequestMethod.get,
     required void Function(Map<String, dynamic> data) successCallback,
     required void Function(String error) errorCallback,
   }) async {
+    _dio.options.baseUrl =
+        type == RequestType.image ? kBaseImageUrl : kBaseVideoUrl;
     Response? response;
     try {
       switch (method) {
@@ -92,7 +94,7 @@ class Http {
         errorMessage = "Connect error";
         break;
       case DioErrorType.unknown:
-        errorMessage = "unknown";
+        errorMessage = "No internet";
         break;
     }
     return errorMessage;

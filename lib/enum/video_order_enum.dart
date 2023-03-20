@@ -1,0 +1,4 @@
+enum VideoOrderEnum {
+  popular,
+  latest,
+}

@@ -38,6 +38,7 @@
 7. [ ] Video Details Page
    1. [ ] Download Video
    2. [ ] Video Play
+8. [ ] Network State
    
 # Library
 [provider: ^6.0.5]()

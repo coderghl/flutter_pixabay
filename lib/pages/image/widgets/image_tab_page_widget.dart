@@ -5,6 +5,7 @@ import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
+import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ImageTabPageWidget extends StatefulWidget {
@@ -30,6 +31,8 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
 
   int page = 1;
 
+  String errorText = "";
+
   @override
   void initState() {
     getImage(ImageOrderEnum.foryou);
@@ -41,6 +44,7 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
     dataIsReady = false;
     dataIsError = false;
     page = 1;
+    setState(() {});
     api.getImage(
       page: page,
       order: this.order,
@@ -52,6 +56,7 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
       },
       errorCallback: (error) {
         dataIsError = true;
+        errorText = error;
         setState(() {});
       },
     );
@@ -79,16 +84,22 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return dataIsError
-        ? Container()
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child:
-                  dataIsReady ? _buildContent() : const MasonryGridSkeleton(),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      child: dataIsError
+          ? NetworkErrorWidget(
+              errorText: errorText,
+              reTry: () => getImage(order),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child:
+                    dataIsReady ? _buildContent() : const MasonryGridSkeleton(),
+              ),
             ),
-          );
+    );
   }
 
   Widget _buildContent() {
@@ -112,10 +123,12 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ImageDetailsPage(
-                    data: pageEntity.imageEntityList, index: index)));
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageDetailsPage(
+                data: pageEntity.imageEntityList, index: index),
+          ),
+        );
       },
       child: Hero(
         tag: imageEntity.webformatUrl,

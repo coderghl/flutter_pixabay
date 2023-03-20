@@ -48,6 +48,7 @@ class _ImagePageState extends State<ImagePage>
 
   @override
   Widget build(BuildContext context) {
+    print("build");
     return ExtendedNestedScrollView(
       onlyOneScrollInBody: true,
       headerSliverBuilder: (context, innerBoxIsScrolled) {

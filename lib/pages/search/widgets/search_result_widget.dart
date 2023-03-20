@@ -4,6 +4,8 @@ import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
+import 'package:flutter_pixabay/widgets/network_error_widget.dart';
+import 'package:flutter_pixabay/widgets/search_result_emp_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class SearchResultWidget extends StatefulWidget {
@@ -26,8 +28,11 @@ class SearchResultWidgetState extends State<SearchResultWidget> {
   bool dataIsReady = false;
   bool dataIsError = false;
   bool isLoadMore = false;
+  bool isEmpty = false;
 
   int page = 1;
+
+  String errorText = "";
 
   @override
   void initState() {
@@ -39,18 +44,21 @@ class SearchResultWidgetState extends State<SearchResultWidget> {
     dataIsReady = false;
     dataIsError = false;
     page = 1;
+    setState(() {});
     api.getImage(
       page: page,
       type: widget.type.type,
       keyWords: widget.keyWords,
       successCallback: (data) {
         pageEntity = ImagePageEntity.fromJson(data);
+        isEmpty = pageEntity.total == 0;
         dataIsReady = true;
         setState(() {});
       },
       errorCallback: (error) {
         dataIsError = true;
-        print("search Result error: $error");
+        errorText = error;
+        setState(() {});
       },
     );
   }
@@ -70,6 +78,7 @@ class SearchResultWidgetState extends State<SearchResultWidget> {
       },
       errorCallback: (error) {
         dataIsError = true;
+        errorText = error;
         setState(() {});
       },
     );
@@ -77,20 +86,29 @@ class SearchResultWidgetState extends State<SearchResultWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return dataIsError
-        ? Container()
-        : Padding(
-            padding: const EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 24,
-            ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child:
-                  dataIsReady ? _buildContent() : const MasonryGridSkeleton(),
-            ),
-          );
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      child: dataIsError
+          ? NetworkErrorWidget(
+              errorText: errorText,
+              reTry: () => _getImage(),
+            )
+          : isEmpty
+              ? SearchResultEmptyWidget()
+              : Padding(
+                  padding: const EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 24,
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: dataIsReady
+                        ? _buildContent()
+                        : const MasonryGridSkeleton(),
+                  ),
+                ),
+    );
   }
 
   Widget _buildContent() {
