@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/video_entity.dart';
 import 'package:flutter_pixabay/entity/video_type_entity.dart';
 import 'package:flutter_pixabay/enum/video_order_enum.dart';
 import 'package:flutter_pixabay/pages/video_details/video_details_page.dart';
 import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
-import 'package:flutter_pixabay/utils/constants.dart';
 import 'package:flutter_pixabay/utils/network/api/video_api.dart';
 import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 

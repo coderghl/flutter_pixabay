@@ -137,7 +137,7 @@ class _ImagePageState extends State<ImagePage>
   void _handelGotoSearchPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SearchPage()),
+      MaterialPageRoute(builder: (context) => const SearchPage()),
     );
   }
 

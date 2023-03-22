@@ -24,13 +24,15 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
 
   late List<Widget> buttonList = [
     IconButton(
-        onPressed: _handelDownload, icon: Icon(Icons.file_download_rounded)),
+        onPressed: _handelDownload,
+        icon: const Icon(Icons.file_download_rounded)),
     IconButton(
-        onPressed: _handelViewOriginalPhoto, icon: Icon(Icons.four_k_outlined)),
-    IconButton(onPressed: () {}, icon: Icon(Icons.image_outlined)),
+        onPressed: _handelViewOriginalPhoto,
+        icon: const Icon(Icons.four_k_outlined)),
+    IconButton(onPressed: () {}, icon: const Icon(Icons.image_outlined)),
   ];
 
-  late List<Widget> labelList = [
+  late List<Widget> labelList = const [
     Text("Download"),
     Text("Original photo"),
     Text("Set wallpaper"),

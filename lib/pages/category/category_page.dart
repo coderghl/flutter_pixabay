@@ -14,14 +14,14 @@ class _CategoryPageState extends State<CategoryPage> {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
-          SliverAppBar(
+          const SliverAppBar(
             title: Text("Category"),
             centerTitle: false,
           ),
         ];
       },
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: GridView.builder(
           itemCount: categoryList.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -60,6 +60,5 @@ class _CategoryPageState extends State<CategoryPage> {
         ),
       ),
     );
-    ;
   }
 }
