@@ -1,10 +1,9 @@
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_pixabay/entity/video_type_entity.dart';
 import 'package:flutter_pixabay/enum/video_order_enum.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
-import 'package:flutter_pixabay/pages/video/video_tab_page_widget.dart';
+import 'package:flutter_pixabay/pages/video/widget/video_tab_page_widget.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
 
 class VideoPage extends StatefulWidget {
@@ -14,8 +13,8 @@ class VideoPage extends StatefulWidget {
   State<VideoPage> createState() => _VideoPageState();
 }
 
-class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMixin {
-
+class _VideoPageState extends State<VideoPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late PageController _pageController;
 
@@ -23,14 +22,11 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
 
   int _currentIndex = 0;
 
-
   List<GlobalKey<VideoTabPageWidgetState>> keys = [
-    GlobalKey(debugLabel: "all"),
-    GlobalKey(debugLabel: "photo"),
-    GlobalKey(debugLabel: "illustration"),
-    GlobalKey(debugLabel: "vector"),
+    GlobalKey(debugLabel: "allVideo"),
+    GlobalKey(debugLabel: "film"),
+    GlobalKey(debugLabel: "animation"),
   ];
-
 
   @override
   void initState() {
@@ -78,7 +74,6 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
           .map((item) => Tab(text: item.name, icon: Icon(item.iconData)))
           .toList());
 
-
   Widget _buildTabBarView() {
     return PageView.builder(
       onPageChanged: _handelPageChange,
@@ -96,37 +91,33 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
     );
   }
 
-  Widget _buildSearchBtn() => Hero(
-    tag: "searchIcon",
-    child: IconButton(
-      onPressed: _handelGotoSearchPage,
-      icon: const Icon(Icons.search_rounded),
-    ),
-  );
+  Widget _buildSearchBtn() => IconButton(
+        onPressed: _handelGotoSearchPage,
+        icon: const Icon(Icons.search_rounded),
+      );
 
   Widget _buildPopupMenu() => PopupMenuButton(
-    initialValue: dataSortType,
-    onSelected: _handelSortType,
-    itemBuilder: (BuildContext context) {
-      return const [
-        PopupMenuItem<VideoOrderEnum>(
-          value: VideoOrderEnum.popular,
-          child: ListTile(
-            leading: Icon(Icons.recommend_rounded),
-            title: Text("Popular"),
-          ),
-        ),
-        PopupMenuItem<VideoOrderEnum>(
-          value: VideoOrderEnum.latest,
-          child: ListTile(
-            leading: Icon(Icons.fiber_new_rounded),
-            title: Text("Latest"),
-          ),
-        ),
-      ];
-    },
-  );
-
+        initialValue: dataSortType,
+        onSelected: _handelSortType,
+        itemBuilder: (BuildContext context) {
+          return const [
+            PopupMenuItem<VideoOrderEnum>(
+              value: VideoOrderEnum.popular,
+              child: ListTile(
+                leading: Icon(Icons.recommend_rounded),
+                title: Text("Popular"),
+              ),
+            ),
+            PopupMenuItem<VideoOrderEnum>(
+              value: VideoOrderEnum.latest,
+              child: ListTile(
+                leading: Icon(Icons.fiber_new_rounded),
+                title: Text("Latest"),
+              ),
+            ),
+          ];
+        },
+      );
 
   void _handelSortType(VideoOrderEnum value) {
     dataSortType = value;
@@ -137,7 +128,9 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
   void _handelGotoSearchPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SearchPage()),
+      MaterialPageRoute(
+        builder: (context) => const SearchPage(),
+      ),
     );
   }
 
@@ -158,5 +151,4 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
       curve: Curves.ease,
     );
   }
-
 }

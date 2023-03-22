@@ -137,9 +137,9 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
     );
   }
 
-  Hero _buildItem(ImageEntity image) {
+  Widget _buildItem(ImageEntity image) {
     return Hero(
-      tag: image.webformatUrl,
+      tag: image.id,
       child: InteractiveViewer(
         maxScale: 5,
         minScale: 1,

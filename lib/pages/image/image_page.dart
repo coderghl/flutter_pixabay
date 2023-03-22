@@ -23,7 +23,7 @@ class _ImagePageState extends State<ImagePage>
   int _currentIndex = 0;
 
   List<GlobalKey<ImageTabPageWidgetState>> keys = [
-    GlobalKey(debugLabel: "all"),
+    GlobalKey(debugLabel: "allImage"),
     GlobalKey(debugLabel: "photo"),
     GlobalKey(debugLabel: "illustration"),
     GlobalKey(debugLabel: "vector"),
@@ -93,12 +93,9 @@ class _ImagePageState extends State<ImagePage>
           .map((item) => Tab(text: item.name, icon: Icon(item.iconData)))
           .toList());
 
-  Widget _buildSearchBtn() => Hero(
-        tag: "searchIcon",
-        child: IconButton(
-          onPressed: _handelGotoSearchPage,
-          icon: const Icon(Icons.search_rounded),
-        ),
+  Widget _buildSearchBtn() => IconButton(
+        onPressed: _handelGotoSearchPage,
+        icon: const Icon(Icons.search_rounded),
       );
 
   Widget _buildPopupMenu() => PopupMenuButton(

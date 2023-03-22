@@ -114,24 +114,26 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
           return SizedBox();
         }
         var imageEntity = pageEntity.imageEntityList[index];
-        return _buildItem(imageEntity, context, index);
+        return _buildItem(imageEntity, index);
       },
     );
   }
 
-  Widget _buildItem(ImageEntity imageEntity, BuildContext context, int index) {
+  Widget _buildItem(ImageEntity imageEntity, int index) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ImageDetailsPage(
-                data: pageEntity.imageEntityList, index: index),
+              data: pageEntity.imageEntityList,
+              index: index,
+            ),
           ),
         );
       },
       child: Hero(
-        tag: imageEntity.webformatUrl,
+        tag: imageEntity.id,
         child: Container(
           height: imageEntity.previewHeight.toDouble(),
           decoration: BoxDecoration(

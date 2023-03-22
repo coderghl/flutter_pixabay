@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/video_entity.dart';
 import 'package:flutter_pixabay/entity/video_type_entity.dart';
 import 'package:flutter_pixabay/enum/video_order_enum.dart';
+import 'package:flutter_pixabay/pages/video_details/video_details_page.dart';
 import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
 import 'package:flutter_pixabay/utils/constants.dart';
 import 'package:flutter_pixabay/utils/network/api/video_api.dart';
@@ -49,7 +50,6 @@ class VideoTabPageWidgetState extends State<VideoTabPageWidget> {
       order: this.order,
       type: widget.type.type,
       successCallback: (data) {
-        print(data);
         pageEntity = VideoPageEntity.fromJson(data);
         dataIsReady = true;
         setState(() {});
@@ -104,7 +104,7 @@ class VideoTabPageWidgetState extends State<VideoTabPageWidget> {
 
   Widget _buildContent() {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisExtent: 200,
         mainAxisSpacing: 16,
@@ -117,38 +117,53 @@ class VideoTabPageWidgetState extends State<VideoTabPageWidget> {
           return SizedBox();
         }
         var item = pageEntity.hits[index];
-        return Container(
-          height: 200,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              image: NetworkImage(
-                  "https://i.vimeocdn.com/video/${item.pictureId}_640x360.jpg"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.black.withOpacity(.5)),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.play_circle_outline_rounded,
-                  size: 48,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                ),
-              ),
-            ],
-          ),
-        );
+        return _buildItem(item);
       },
+    );
+  }
 
+  Widget _buildItem(VideoEntity item) {
+    return GestureDetector(
+      onTap: () => _handelOnTap(item),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: DecorationImage(
+            image: NetworkImage(
+              "https://i.vimeocdn.com/video/${item.pictureId}_300x300.jpg",
+            ),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(.5)),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.play_circle_outline_rounded,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _handelOnTap(VideoEntity data) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VideoDetailsPage(data: data),
+      ),
     );
   }
 }
