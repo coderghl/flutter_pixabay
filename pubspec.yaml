@@ -51,6 +51,8 @@ dependencies:
   # 视频播放
   video_player: ^2.6.0
   extended_image: ^7.0.2
+  path_provider: ^2.0.14
+  permission_handler: ^10.2.0
 
 
 dev_dependencies:

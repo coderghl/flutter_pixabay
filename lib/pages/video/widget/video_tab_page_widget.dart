@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/video_entity.dart';
 import 'package:flutter_pixabay/entity/video_type_entity.dart';
@@ -123,35 +124,8 @@ class VideoTabPageWidgetState extends State<VideoTabPageWidget> {
   Widget _buildItem(VideoEntity item) {
     return GestureDetector(
       onTap: () => _handelOnTap(item),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          image: DecorationImage(
-            image: NetworkImage(
-              "https://i.vimeocdn.com/video/${item.pictureId}_300x300.jpg",
-            ),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.black.withOpacity(.5)),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.play_circle_outline_rounded,
-                size: 48,
-                color: Theme.of(context).colorScheme.onSecondary,
-              ),
-            ),
-          ],
-        ),
+      child: ExtendedImage.network(
+        "https://i.vimeocdn.com/video/${item.pictureId}_300x300.jpg",
       ),
     );
   }
