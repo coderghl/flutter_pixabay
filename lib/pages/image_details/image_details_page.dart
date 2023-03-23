@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/utils/network/api/download_api.dart';
@@ -22,27 +23,10 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
 
   late PageController controller;
 
-  late List<Widget> buttonList = [
-    IconButton(
-        onPressed: _handelDownload,
-        icon: const Icon(Icons.file_download_rounded)),
-    IconButton(
-        onPressed: _handelViewOriginalPhoto,
-        icon: const Icon(Icons.four_k_outlined)),
-    IconButton(onPressed: () {}, icon: const Icon(Icons.image_outlined)),
-  ];
-
-  late List<Widget> labelList = const [
-    Text("Download"),
-    Text("Original photo"),
-    Text("Set wallpaper"),
-  ];
-
   @override
   void initState() {
     _index = widget.index;
     controller = PageController(initialPage: _index);
-    _buildBottomSheet();
     super.initState();
   }
 
@@ -52,47 +36,12 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
     super.dispose();
   }
 
-  void _buildBottomSheet() {
-    buttonList = List.generate(
-      buttonList.length,
-      (index) => Padding(
-        padding: const EdgeInsets.only(top: 20, bottom: 40),
-        child: Column(
-          children: [
-            buttonList[index],
-            labelList[index],
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _handelOnTap() {
-    Navigator.pop(context);
-  }
-
-  void _handelOnLongPress() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SizedBox(
-          height: 150,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: buttonList,
-          ),
-        );
-      },
-    );
-  }
-
   void _handelPageChange(int index) {
     _index = index;
     setState(() {});
   }
 
   void _handelViewOriginalPhoto() {
-    Navigator.pop(context);
     widget.data[_index].originalPhoto = true;
     setState(() {});
   }
@@ -100,7 +49,6 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   void _handelDownload() async {
     bool result =
         await api.downloadImage(url: widget.data[_index].largeImageUrl);
-    Navigator.pop(context);
     if (result) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Download success")));
@@ -113,13 +61,13 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: _handelOnLongPress,
-      onTap: _handelOnTap,
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text("${_index + 1}/${widget.data.length}"),
-          actions: [],
+          actions: [
+            _buildPopupMenu(),
+          ],
         ),
         body: _buildPage(),
       ),
@@ -141,14 +89,46 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
 
   Widget _buildItem(ImageEntity image) {
     return Hero(
-      tag: image.id,
+      tag: image.webformatUrl,
       child: InteractiveViewer(
         maxScale: 5,
         minScale: 1,
-        child: Image.network(
+        child: ExtendedImage.network(
           image.originalPhoto ? image.largeImageUrl : image.webformatUrl,
+          mode: ExtendedImageMode.gesture,
+          cache: true,
+          initGestureConfigHandler: (state) => GestureConfig(
+            minScale: .9,
+            maxScale: 5,
+            animationMaxScale: 5.5,
+            animationMinScale: .9,
+            speed: 1.0,
+            initialScale: 1.0,
+            inPageView: true,
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildPopupMenu() => PopupMenuButton(
+        itemBuilder: (BuildContext context) {
+          return [
+            PopupMenuItem(
+              onTap: _handelDownload,
+              child: const ListTile(
+                title: Text("Download"),
+                leading: Icon(Icons.download_rounded),
+              ),
+            ),
+            PopupMenuItem(
+              onTap: _handelViewOriginalPhoto,
+              child: const ListTile(
+                title: Text("Original Photo"),
+                leading: Icon(Icons.four_k),
+              ),
+            ),
+          ];
+        },
+      );
 }

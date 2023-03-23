@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ImageTabPageWidget extends StatefulWidget {
-  ImageTabPageWidget({
+  const ImageTabPageWidget({
     super.key,
     required this.type,
   });
@@ -133,17 +134,13 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
         );
       },
       child: Hero(
-        tag: imageEntity.id,
-        child: Container(
-          height: imageEntity.previewHeight.toDouble(),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Theme.of(context).colorScheme.secondary,
-            image: DecorationImage(
-              image: NetworkImage(imageEntity.webformatUrl),
-              fit: BoxFit.cover,
-            ),
-          ),
+        tag: imageEntity.webformatUrl,
+        child: ExtendedImage.network(
+          imageEntity.webformatUrl,
+          shape: BoxShape.rectangle,
+          width: imageEntity.previewWidth.toDouble(),
+          borderRadius: BorderRadius.circular(12),
+          fit: BoxFit.cover,
         ),
       ),
     );
