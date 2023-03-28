@@ -59,6 +59,7 @@ class Http {
           break;
       }
     } on DioError catch (error) {
+      print(error);
       errorCallback(errorFactory(error));
     }
 
@@ -94,7 +95,7 @@ class Http {
         errorMessage = "Connect error";
         break;
       case DioErrorType.unknown:
-        errorMessage = "No internet";
+        errorMessage = "unknown";
         break;
     }
     return errorMessage;

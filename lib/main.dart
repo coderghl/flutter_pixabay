@@ -9,7 +9,6 @@ void main() => Global.init().then(
         ChangeNotifierProvider<AppThemeState>.value(
           value: Global.appTheme,
           child: Consumer<AppThemeState>(
-            // ignore: prefer_const_constructors
             builder: (context, value, child) => MyApp(),
           ),
         ),

@@ -4,7 +4,7 @@ import 'package:flutter_pixabay/entity/video_entity.dart';
 import 'package:flutter_pixabay/entity/video_type_entity.dart';
 import 'package:flutter_pixabay/enum/video_order_enum.dart';
 import 'package:flutter_pixabay/pages/video_details/video_details_page.dart';
-import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
+import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
 import 'package:flutter_pixabay/utils/network/api/video_api.dart';
 import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 
@@ -94,26 +94,24 @@ class VideoTabPageWidgetState extends State<VideoTabPageWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
-                child:
-                    dataIsReady ? _buildContent() : const MasonryGridSkeleton(),
+                child: dataIsReady
+                    ? _buildContent()
+                    : const CircularProgressIndicator(),
               ),
             ),
     );
   }
 
   Widget _buildContent() {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisExtent: 200,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 8,
-      ),
+    return ListView.builder(
       itemCount: pageEntity.hits.length + 1,
       itemBuilder: (context, index) {
         if (pageEntity.hits.length == index) {
           loadMore();
-          return SizedBox();
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
         var item = pageEntity.hits[index];
         return _buildItem(item);
@@ -124,8 +122,28 @@ class VideoTabPageWidgetState extends State<VideoTabPageWidget> {
   Widget _buildItem(VideoEntity item) {
     return GestureDetector(
       onTap: () => _handelOnTap(item),
-      child: ExtendedImage.network(
-        "https://i.vimeocdn.com/video/${item.pictureId}_300x300.jpg",
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: ExtendedImage.network(
+          "https://i.vimeocdn.com/video/${item.pictureId}_960x540.jpg",
+          height: 250,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          shape: BoxShape.rectangle,
+          loadStateChanged: (state) {
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                return const SkeletonContainer(
+                  size: Size(double.infinity, 250),
+                );
+              case LoadState.completed:
+                break;
+              case LoadState.failed:
+                break;
+            }
+          },
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }

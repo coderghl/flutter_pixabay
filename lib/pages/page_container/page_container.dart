@@ -41,7 +41,7 @@ class _PageContainerState extends State<PageContainer> {
           ),
           NavigationDestination(
             icon: Icon(Icons.videocam_rounded),
-            label: "Image",
+            label: "Video",
           ),
           NavigationDestination(
             icon: Icon(Icons.category_rounded),

@@ -4,6 +4,7 @@ import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/enum/image_type_enum.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
+import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -86,21 +87,24 @@ class _ImageListState extends State<ImageList> {
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 400),
         child: _dataIsReady
-            ? MasonryGridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 8,
-                itemCount: pageData.imageEntityList.length + 1,
-                itemBuilder: (context, index) {
-                  if (pageData.imageEntityList.length == index) {
-                    loadMore();
-                    return const SizedBox();
-                  }
-                  var data = pageData.imageEntityList[index];
-                  return _buildItem(data, index);
-                },
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: MasonryGridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 8,
+                  itemCount: pageData.imageEntityList.length + 1,
+                  itemBuilder: (context, index) {
+                    if (pageData.imageEntityList.length == index) {
+                      loadMore();
+                      return const SizedBox();
+                    }
+                    var data = pageData.imageEntityList[index];
+                    return _buildItem(data, index);
+                  },
+                ),
               )
-            : null,
+            : const Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -125,10 +129,26 @@ class _ImageListState extends State<ImageList> {
         tag: data.webformatUrl,
         child: ExtendedImage.network(
           data.webformatUrl,
+          fit: BoxFit.cover,
           shape: BoxShape.rectangle,
           width: data.previewWidth.toDouble(),
+          height: data.previewHeight.toDouble(),
           borderRadius: BorderRadius.circular(12),
-          fit: BoxFit.cover,
+          loadStateChanged: (state) {
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                return SkeletonContainer(
+                  size: Size(
+                    data.previewWidth.toDouble(),
+                    data.previewHeight.toDouble(),
+                  ),
+                );
+              case LoadState.completed:
+                break;
+              case LoadState.failed:
+                break;
+            }
+          },
         ),
       ),
     );

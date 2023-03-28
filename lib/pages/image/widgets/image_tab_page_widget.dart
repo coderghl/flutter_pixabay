@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
 import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
+import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_pixabay/skeleton/masonry_grid_skeleton.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
@@ -96,8 +97,9 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
-                child:
-                    dataIsReady ? _buildContent() : const MasonryGridSkeleton(),
+                child: dataIsReady
+                    ? _buildContent()
+                    : const CircularProgressIndicator(),
               ),
             ),
     );
@@ -112,7 +114,7 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
       itemBuilder: (context, index) {
         if (pageEntity.imageEntityList.length == index) {
           loadMore();
-          return SizedBox();
+          return const SizedBox();
         }
         var imageEntity = pageEntity.imageEntityList[index];
         return _buildItem(imageEntity, index);
@@ -137,10 +139,26 @@ class ImageTabPageWidgetState extends State<ImageTabPageWidget> {
         tag: imageEntity.webformatUrl,
         child: ExtendedImage.network(
           imageEntity.webformatUrl,
+          fit: BoxFit.cover,
           shape: BoxShape.rectangle,
           width: imageEntity.previewWidth.toDouble(),
+          height: imageEntity.previewHeight.toDouble(),
           borderRadius: BorderRadius.circular(12),
-          fit: BoxFit.cover,
+          loadStateChanged: (state) {
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                return SkeletonContainer(
+                  size: Size(
+                    imageEntity.previewWidth.toDouble(),
+                    imageEntity.previewHeight.toDouble(),
+                  ),
+                );
+              case LoadState.completed:
+                break;
+              case LoadState.failed:
+                break;
+            }
+          },
         ),
       ),
     );
