@@ -6,16 +6,19 @@ import 'package:flutter_pixabay/enum/image_type_enum.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
+import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ImageList extends StatefulWidget {
   ImageList({
     Key? key,
     required this.type,
-    this.category = "",
+    this.order = ImageOrderEnum.foryou,
+    this.categoryTitle = "",
   }) : super(key: key);
   final ImageTypeEnum type;
-  String category;
+  ImageOrderEnum order;
+  String categoryTitle;
 
   @override
   State<ImageList> createState() => _ImageListState();
@@ -23,58 +26,67 @@ class ImageList extends StatefulWidget {
 
 class _ImageListState extends State<ImageList> {
   late ImagePageEntity pageData;
-  late ImageOrderEnum _order;
-
   final ImageApi _api = ImageApi();
 
   int _page = 1;
-  bool _dataIsError = false;
-  bool _dataIsReady = false;
-  bool _isLoadMore = false;
+  bool isHaveData = false;
+  bool dataIsError = false;
+  bool dataIsReady = false;
+  bool isLoadMore = false;
+
+  String errorText = "";
 
   @override
   void initState() {
-    getImage(ImageOrderEnum.foryou);
+    getImage();
     super.initState();
   }
 
-  void getImage(ImageOrderEnum order) {
-    _order = order;
-    _dataIsError = false;
-    _dataIsReady = false;
+  @override
+  void didUpdateWidget(covariant ImageList oldWidget) {
+    if (oldWidget.order != widget.order) {
+      getImage();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void getImage() {
+    dataIsError = false;
+    dataIsReady = false;
+    isHaveData = false;
     _page = 1;
     setState(() {});
-    _api.getImage(
-      page: _page,
-      order: _order,
-      type: widget.type,
-      successCallback: (data) {
-        pageData = ImagePageEntity.fromJson(data);
-        _dataIsReady = true;
-        setState(() {});
-      },
-      errorCallback: (error) {
-        _dataIsError = true;
-        setState(() {});
-      },
-    );
+    request();
   }
 
   void loadMore() {
-    if (_isLoadMore) return;
+    if (!isLoadMore) return;
     _page++;
+    request();
+  }
+
+  void request() {
     _api.getImage(
       page: _page,
-      order: _order,
+      order: widget.order,
       type: widget.type,
+      category: widget.categoryTitle,
       successCallback: (data) {
-        var newData = ImagePageEntity.fromJson(data);
-        pageData.imageEntityList.addAll(newData.imageEntityList);
-        _isLoadMore = false;
+        if(isHaveData){
+          pageData.imageEntityList.addAll(ImagePageEntity.fromJson(data).imageEntityList);
+        }else{
+          pageData = ImagePageEntity.fromJson(data);
+        }
+
+        isHaveData = true;
+        isLoadMore = false;
+        dataIsReady = true;
         setState(() {});
       },
       errorCallback: (error) {
-        _dataIsError = true;
+        dataIsError = true;
+        isHaveData = false;
+        errorText = error;
         setState(() {});
       },
     );
@@ -86,25 +98,31 @@ class _ImageListState extends State<ImageList> {
       color: Theme.of(context).colorScheme.background,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 400),
-        child: _dataIsReady
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: MasonryGridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 8,
-                  itemCount: pageData.imageEntityList.length + 1,
-                  itemBuilder: (context, index) {
-                    if (pageData.imageEntityList.length == index) {
-                      loadMore();
-                      return const SizedBox();
-                    }
-                    var data = pageData.imageEntityList[index];
-                    return _buildItem(data, index);
-                  },
-                ),
+        child: dataIsError
+            ? NetworkErrorWidget(
+                errorText: errorText,
+                reTry: () => getImage(),
               )
-            : const Center(child: CircularProgressIndicator()),
+            : dataIsReady
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: MasonryGridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 8,
+                      itemCount: pageData.imageEntityList.length + 1,
+                      itemBuilder: (context, index) {
+                        if (pageData.imageEntityList.length == index) {
+                          isLoadMore = true;
+                          loadMore();
+                          return const SizedBox();
+                        }
+                        var data = pageData.imageEntityList[index];
+                        return _buildItem(data, index);
+                      },
+                    ),
+                  )
+                : const Center(child: CircularProgressIndicator()),
       ),
     );
   }

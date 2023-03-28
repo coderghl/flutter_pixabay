@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class SearchHistoryWidget extends StatefulWidget {
   const SearchHistoryWidget({super.key, required this.callback});
+
   final void Function(String value) callback;
 
   @override
@@ -15,31 +16,15 @@ class _SearchHistoryWidgetState extends State<SearchHistoryWidget> {
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
+        children: const [
+          Text(
             "History",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(
-                  20,
-                  (index) => ActionChip(
-                    label: Text("Item $index"),
-                    onPressed: () {},
-                  ),
-                ),
-              ),
-            ),
-          )
+          SizedBox(height: 16),
         ],
       ),
     );

@@ -4,7 +4,9 @@ import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/pages/image/widgets/image_tab_page_widget.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
+import 'package:flutter_pixabay/provider/image_order_provider.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
+import 'package:provider/provider.dart';
 
 class ImagePage extends StatefulWidget {
   const ImagePage({Key? key}) : super(key: key);
@@ -16,18 +18,9 @@ class ImagePage extends StatefulWidget {
 class _ImagePageState extends State<ImagePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late PageController _pageController;
-
-  ImageOrderEnum dataSortType = ImageOrderEnum.foryou;
 
   int _currentIndex = 0;
-
-  List<GlobalKey<ImageTabPageWidgetState>> keys = [
-    GlobalKey(debugLabel: "allImage"),
-    GlobalKey(debugLabel: "photo"),
-    GlobalKey(debugLabel: "illustration"),
-    GlobalKey(debugLabel: "vector"),
-  ];
+  ImageOrderProvider imageOrderProvider = ImageOrderProvider();
 
   @override
   void initState() {
@@ -36,14 +29,15 @@ class _ImagePageState extends State<ImagePage>
       length: imageTypeList.length,
       vsync: this,
     );
-    _pageController = PageController(initialPage: _currentIndex);
+    _tabController.addListener(() {
+      _handelPageChange();
+    });
     super.initState();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -56,7 +50,7 @@ class _ImagePageState extends State<ImagePage>
           SliverAppBar(
             floating: true,
             snap: true,
-            title: const Text("Pixabay"),
+            title: const Text("Image"),
             bottom: _buildTabBar(),
             actions: [
               _buildSearchBtn(),
@@ -65,30 +59,30 @@ class _ImagePageState extends State<ImagePage>
           ),
         ];
       },
-      body: _buildTabBarView(),
+      body: ChangeNotifierProvider<ImageOrderProvider>.value(
+        value: imageOrderProvider,
+        builder: (context, child) => _buildTabBarView(),
+      ),
     );
   }
 
   Widget _buildTabBarView() {
-    return PageView.builder(
-      onPageChanged: _handelPageChange,
-      itemCount: imageTypeList.length,
-      controller: _pageController,
-      itemBuilder: (BuildContext context, int index) {
-        return KeepAliveWidget(
+    return TabBarView(
+      controller: _tabController,
+      children: List.generate(
+        imageTypeList.length,
+        (index) => KeepAliveWidget(
           wantKeepAlive: true,
           child: ImageTabPageWidget(
-            key: keys[index],
             type: imageTypeList[index],
           ),
-        );
-      },
+        ),
+      ).toList(),
     );
   }
 
   TabBar _buildTabBar() => TabBar(
       controller: _tabController,
-      onTap: _handelTabOnTap,
       tabs: imageTypeList
           .map((item) => Tab(text: item.name, icon: Icon(item.iconData)))
           .toList());
@@ -99,7 +93,7 @@ class _ImagePageState extends State<ImagePage>
       );
 
   Widget _buildPopupMenu() => PopupMenuButton(
-        initialValue: dataSortType,
+        initialValue: imageOrderProvider.currentOrder,
         onSelected: _handelSortType,
         itemBuilder: (BuildContext context) {
           return const [
@@ -128,9 +122,8 @@ class _ImagePageState extends State<ImagePage>
         },
       );
 
-  void _handelSortType(ImageOrderEnum value) {
-    dataSortType = value;
-    keys[_currentIndex].currentState?.getImage(dataSortType);
+  void _handelSortType(ImageOrderEnum newOrder) {
+    imageOrderProvider.setOrder(newOrder);
     setState(() {});
   }
 
@@ -141,21 +134,7 @@ class _ImagePageState extends State<ImagePage>
     );
   }
 
-  void _handelTabOnTap(int index) {
-    _currentIndex = index;
-    _pageController.animateToPage(
-      _currentIndex,
-      duration: Duration(milliseconds: 200),
-      curve: Curves.ease,
-    );
-  }
-
-  void _handelPageChange(int index) {
-    _currentIndex = index;
-    _tabController.animateTo(
-      _currentIndex,
-      duration: Duration(milliseconds: 200),
-      curve: Curves.ease,
-    );
+  void _handelPageChange() {
+    _currentIndex = _tabController.index;
   }
 }

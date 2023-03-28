@@ -4,7 +4,9 @@ import 'package:flutter_pixabay/entity/video_type_entity.dart';
 import 'package:flutter_pixabay/enum/video_order_enum.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
 import 'package:flutter_pixabay/pages/video/widget/video_tab_page_widget.dart';
+import 'package:flutter_pixabay/provider/video_order_provider.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
+import 'package:provider/provider.dart';
 
 class VideoPage extends StatefulWidget {
   const VideoPage({super.key});
@@ -16,17 +18,9 @@ class VideoPage extends StatefulWidget {
 class _VideoPageState extends State<VideoPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late PageController _pageController;
-
-  VideoOrderEnum dataSortType = VideoOrderEnum.popular;
 
   int _currentIndex = 0;
-
-  List<GlobalKey<VideoTabPageWidgetState>> keys = [
-    GlobalKey(debugLabel: "allVideo"),
-    GlobalKey(debugLabel: "film"),
-    GlobalKey(debugLabel: "animation"),
-  ];
+  VideoOrderProvider videoOrderProvider = VideoOrderProvider();
 
   @override
   void initState() {
@@ -35,14 +29,16 @@ class _VideoPageState extends State<VideoPage>
       length: videoTypeList.length,
       vsync: this,
     );
-    _pageController = PageController(initialPage: _currentIndex);
+
+    _tabController.addListener(() {
+      _handelPageChange();
+    });
     super.initState();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -54,7 +50,7 @@ class _VideoPageState extends State<VideoPage>
           SliverAppBar(
             floating: true,
             snap: true,
-            title: const Text("Pixabay"),
+            title: const Text("Video"),
             bottom: _buildTabBar(),
             actions: [
               _buildSearchBtn(),
@@ -63,31 +59,31 @@ class _VideoPageState extends State<VideoPage>
           ),
         ];
       },
-      body: _buildTabBarView(),
+      body: ChangeNotifierProvider<VideoOrderProvider>.value(
+        value: videoOrderProvider,
+        builder: (context, child) => _buildTabBarView(),
+      ),
     );
   }
 
   TabBar _buildTabBar() => TabBar(
       controller: _tabController,
-      onTap: _handelTabOnTap,
       tabs: videoTypeList
           .map((item) => Tab(text: item.name, icon: Icon(item.iconData)))
           .toList());
 
   Widget _buildTabBarView() {
-    return PageView.builder(
-      onPageChanged: _handelPageChange,
-      itemCount: videoTypeList.length,
-      controller: _pageController,
-      itemBuilder: (BuildContext context, int index) {
-        return KeepAliveWidget(
+    return TabBarView(
+      controller: _tabController,
+      children: List.generate(
+        videoTypeList.length,
+        (index) => KeepAliveWidget(
           wantKeepAlive: true,
           child: VideoTabPageWidget(
-            key: keys[index],
             type: videoTypeList[index],
           ),
-        );
-      },
+        ),
+      ).toList(),
     );
   }
 
@@ -97,7 +93,7 @@ class _VideoPageState extends State<VideoPage>
       );
 
   Widget _buildPopupMenu() => PopupMenuButton(
-        initialValue: dataSortType,
+        initialValue: videoOrderProvider.currentOrder,
         onSelected: _handelSortType,
         itemBuilder: (BuildContext context) {
           return const [
@@ -119,9 +115,8 @@ class _VideoPageState extends State<VideoPage>
         },
       );
 
-  void _handelSortType(VideoOrderEnum value) {
-    dataSortType = value;
-    keys[_currentIndex].currentState?.getVideo(dataSortType);
+  void _handelSortType(VideoOrderEnum newOrder) {
+    videoOrderProvider.setOrder(newOrder);
     setState(() {});
   }
 
@@ -134,21 +129,7 @@ class _VideoPageState extends State<VideoPage>
     );
   }
 
-  void _handelTabOnTap(int index) {
-    _currentIndex = index;
-    _pageController.animateToPage(
-      _currentIndex,
-      duration: Duration(milliseconds: 200),
-      curve: Curves.ease,
-    );
-  }
-
-  void _handelPageChange(int index) {
-    _currentIndex = index;
-    _tabController.animateTo(
-      _currentIndex,
-      duration: Duration(milliseconds: 200),
-      curve: Curves.ease,
-    );
+  void _handelPageChange() {
+    _currentIndex = _tabController.index;
   }
 }

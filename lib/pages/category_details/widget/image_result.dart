@@ -9,6 +9,9 @@ class ImageResultWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageList(type: ImageTypeEnum.all);
+    return ImageList(
+      type: ImageTypeEnum.all,
+      categoryTitle: categoryTitle,
+    );
   }
 }

@@ -4,18 +4,23 @@ import 'package:flutter_pixabay/utils/network/http/http.dart';
 
 class ImageApi {
   void getImage({
-    required ImageTypeEnum type,
     required int page,
+    required ImageTypeEnum type,
     required void Function(Map<String, dynamic> data) successCallback,
     required void Function(String error) errorCallback,
     String keyWords = "",
+    String category = "",
     ImageOrderEnum order = ImageOrderEnum.foryou,
   }) {
     String resultType = _getImageTypeUrl(type);
     String resultOrder = _getImageOrder(order);
-    String path = keyWords.isEmpty
-        ? "image_type=$resultType&order=$resultOrder&page=$page"
-        : "image_type=$resultType&q=$keyWords&page=$page";
+    String path = "";
+    if (keyWords.isNotEmpty) path += "&q=$keyWords";
+    if (category.isNotEmpty) path += "&category=$category";
+
+    path += "&image_type=$resultType";
+    path += "&order=$resultOrder";
+    path += "&page=$page";
 
     Http().request(
       path: path,

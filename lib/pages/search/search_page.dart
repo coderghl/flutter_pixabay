@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pixabay/entity/image_type_entity.dart';
 import 'package:flutter_pixabay/pages/search/widgets/search_history_widget.dart';
 import 'package:flutter_pixabay/pages/search/widgets/search_result_widget.dart';
 
@@ -54,7 +53,6 @@ class _SearchPageState extends State<SearchPage> {
         child: isSearch
             ? SearchResultWidget(
                 keyWords: _searchController.text,
-                type: imageTypeList.first,
               )
             : SearchHistoryWidget(
                 callback: (String value) {},

@@ -9,13 +9,18 @@ class VideoApi {
     required void Function(Map<String, dynamic> data) successCallback,
     required void Function(String error) errorCallback,
     String keyWords = "",
+    String category = "",
     VideoOrderEnum order = VideoOrderEnum.popular,
   }) {
     String resultType = _getVideoTypeUrl(type);
     String resultOrder = _getVideoOrder(order);
-    String path = keyWords.isEmpty
-        ? "video_type=$resultType&order=$resultOrder&page=$page"
-        : "video_type=$resultType&q=$keyWords&page=$page";
+    String path = "";
+    if (keyWords.isNotEmpty) path += "&q=$keyWords";
+    if (category.isNotEmpty) path += "&category=$category";
+
+    path += "&video_type=$resultType";
+    path += "&order=$resultOrder";
+    path += "&page=$page";
 
     Http().request(
       path: path,
