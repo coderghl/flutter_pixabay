@@ -19,19 +19,15 @@ class _ImagePageState extends State<ImagePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  int _currentIndex = 0;
   ImageOrderProvider imageOrderProvider = ImageOrderProvider();
 
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: _currentIndex,
+      initialIndex: 0,
       length: imageTypeList.length,
       vsync: this,
     );
-    _tabController.addListener(() {
-      _handelPageChange();
-    });
     super.initState();
   }
 
@@ -132,9 +128,5 @@ class _ImagePageState extends State<ImagePage>
       context,
       MaterialPageRoute(builder: (context) => const SearchPage()),
     );
-  }
-
-  void _handelPageChange() {
-    _currentIndex = _tabController.index;
   }
 }

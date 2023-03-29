@@ -59,7 +59,7 @@ class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
           clipBehavior: Clip.hardEdge,
           child: Stack(
             children: [
-              _buildTopBar(context),
+              if (widget.isFullScreen) _buildTopBar(context),
               _buildBuffer(),
               _buildSlider(),
             ],
@@ -76,11 +76,29 @@ class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
   Widget _buildTopBar(BuildContext context) {
     return AnimatedAlign(
       duration: const Duration(milliseconds: 400),
-      alignment:
-          _showControlPad ? Alignment.topLeft : const Alignment(-1, -1.5),
-      child: IconButton(
-        onPressed: () => Navigator.pop(context),
-        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+      alignment: _showControlPad ? Alignment.topLeft : const Alignment(-1, -2),
+      child: Container(
+        width: double.infinity,
+        height: 54,
+        alignment: Alignment.topLeft,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black12,
+              Colors.black26,
+            ],
+            stops: [.4, .6],
+          ),
+        ),
+        child: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -88,48 +106,62 @@ class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
   Widget _buildSlider() {
     return AnimatedAlign(
       alignment:
-          _showControlPad ? Alignment.bottomCenter : const Alignment(0, 1.5),
+          _showControlPad ? Alignment.bottomCenter : const Alignment(0, 2),
       duration: const Duration(milliseconds: 400),
-      child: AnimatedOpacity(
-        opacity: 1,
-        duration: const Duration(milliseconds: 400),
-        child: ColoredBox(
-          color: Colors.grey.withOpacity(.1),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: _onDoubleTap,
-                icon: Icon(
-                  _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                ),
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: 24,
-                  child: Slider(
-                    onChanged: (double value) {
-                      setState(() {
-                        widget.controller
-                            .seekTo(Duration(seconds: value.toInt()));
-                      });
-                    },
-                    max: _duration.inSeconds.toDouble(),
-                    value: _position.inSeconds.toDouble(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                    "${formatDuration(_position)}/${formatDuration(_duration)}"),
-              ),
-              IconButton(
-                onPressed: _onFullScreen,
-                icon: const Icon(Icons.fullscreen_exit_rounded),
-              ),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              Colors.black26,
+              Colors.black12,
             ],
+            stops: [.4, .6],
           ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: _onDoubleTap,
+              icon: Icon(
+                _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                color: Colors.white,
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 24,
+                child: Slider(
+                  onChanged: (double value) {
+                    setState(() {
+                      widget.controller
+                          .seekTo(Duration(seconds: value.toInt()));
+                    });
+                  },
+                  max: _duration.inSeconds.toDouble(),
+                  value: _position.inSeconds.toDouble(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                "${formatDuration(_position)}/${formatDuration(_duration)}",
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: _onFullScreen,
+              icon: const Icon(
+                Icons.fullscreen_exit_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );

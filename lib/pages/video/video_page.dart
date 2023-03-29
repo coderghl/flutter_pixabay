@@ -19,20 +19,15 @@ class _VideoPageState extends State<VideoPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  int _currentIndex = 0;
   VideoOrderProvider videoOrderProvider = VideoOrderProvider();
 
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: _currentIndex,
+      initialIndex: 0,
       length: videoTypeList.length,
       vsync: this,
     );
-
-    _tabController.addListener(() {
-      _handelPageChange();
-    });
     super.initState();
   }
 
@@ -127,9 +122,5 @@ class _VideoPageState extends State<VideoPage>
         builder: (context) => const SearchPage(),
       ),
     );
-  }
-
-  void _handelPageChange() {
-    _currentIndex = _tabController.index;
   }
 }
