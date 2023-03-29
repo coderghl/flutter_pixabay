@@ -39,22 +39,22 @@
 
 # Dependencies
 
-[provider: ^6.0.5]("https://pub.dev/packages/provider")
+[provider: ^6.0.5](https://pub.dev/packages/provider)
 
-[shared_preferences: ^2.0.18]("https://pub.dev/packages/shared_preferences")
+[shared_preferences: ^2.0.18](https://pub.dev/packages/shared_preferences)
 
-[dio: ^5.0.1]("https://pub.dev/packages/dio")
+[dio: ^5.0.1](https://pub.dev/packages/dio)
 
-[extended_nested_scroll_view: ^6.0.0]("https://pub.dev/packages/extended_nested_scroll_view")
+[extended_nested_scroll_view: ^6.0.0](https://pub.dev/packages/extended_nested_scroll_view)
 
-[flutter_staggered_grid_view: ^0.6.2]("https://pub.dev/packages/flutter_staggered_grid_view")
+[flutter_staggered_grid_view: ^0.6.2](https://pub.dev/packages/flutter_staggered_grid_view)
 
-[image_gallery_saver: ^1.7.1]("https://pub.dev/packages/image_gallery_saver")
+[image_gallery_saver: ^1.7.1](https://pub.dev/packages/image_gallery_saver)
 
-[video_player: ^2.6.0]("https://pub.dev/packages/video_player")
+[video_player: ^2.6.0](https://pub.dev/packages/video_player)
 
-[extended_image: ^7.0.2]("https://pub.dev/packages/extended_image")
+[extended_image: ^7.0.2](https://pub.dev/packages/extended_image)
 
-[path_provider: ^2.0.14]("https://pub.dev/packages/path_provider")
+[path_provider: ^2.0.14](https://pub.dev/packages/path_provider)
 
-[permission_handler: ^10.2.0]("https://pub.dev/packages/permission_handler")
+[permission_handler: ^10.2.0](https://pub.dev/packages/permission_handler)
