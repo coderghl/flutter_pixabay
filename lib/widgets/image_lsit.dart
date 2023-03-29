@@ -15,10 +15,12 @@ class ImageList extends StatefulWidget {
     required this.type,
     this.order = ImageOrderEnum.foryou,
     this.categoryTitle = "",
+    this.keyWords = "",
   }) : super(key: key);
   final ImageTypeEnum type;
   ImageOrderEnum order;
   String categoryTitle;
+  String keyWords;
 
   @override
   State<ImageList> createState() => _ImageListState();
@@ -70,11 +72,13 @@ class _ImageListState extends State<ImageList> {
       page: _page,
       order: widget.order,
       type: widget.type,
+      keyWords: widget.keyWords,
       category: widget.categoryTitle,
       successCallback: (data) {
-        if(isHaveData){
-          pageData.imageEntityList.addAll(ImagePageEntity.fromJson(data).imageEntityList);
-        }else{
+        if (isHaveData) {
+          pageData.imageEntityList
+              .addAll(ImagePageEntity.fromJson(data).imageEntityList);
+        } else {
           pageData = ImagePageEntity.fromJson(data);
         }
 

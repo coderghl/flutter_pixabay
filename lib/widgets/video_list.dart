@@ -14,12 +14,13 @@ class VideoList extends StatefulWidget {
     required this.type,
     this.order = VideoOrderEnum.popular,
     this.categoryTitle = "",
+    this.keyWords = "",
   }) : super(key: key);
 
   final VideoTypeEnum type;
   final VideoOrderEnum order;
   String categoryTitle;
-
+  String keyWords;
   @override
   State<VideoList> createState() => _VideoListState();
 }
@@ -62,6 +63,7 @@ class _VideoListState extends State<VideoList> {
     api.getVideo(
       page: page,
       order: widget.order,
+      keyWords: widget.keyWords,
       category: widget.categoryTitle,
       type: widget.type,
       successCallback: (data) {

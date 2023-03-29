@@ -6,7 +6,7 @@ class AppThemeState with ChangeNotifier {
   int selColorSchemeSeed = 0;
 
   List<Color> colorSchemeSeedList = [
-    Colors.purple,
+    const Color(0xff6750a4),
     Colors.indigo,
     Colors.blue,
     Colors.teal,
