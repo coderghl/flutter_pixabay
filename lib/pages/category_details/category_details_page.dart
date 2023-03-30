@@ -1,8 +1,10 @@
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pixabay/pages/category_details/widget/image_result.dart';
-import 'package:flutter_pixabay/pages/category_details/widget/video_result.dart';
+import 'package:flutter_pixabay/enum/image_type_enum.dart';
+import 'package:flutter_pixabay/enum/video_type_enum.dart';
+import 'package:flutter_pixabay/widgets/image_lsit.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
+import 'package:flutter_pixabay/widgets/video_list.dart';
 
 class CategoryDetailsPage extends StatefulWidget {
   const CategoryDetailsPage({
@@ -49,10 +51,16 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage>
         controller: _controller,
         children: [
           KeepAliveWidget(
-            child: ImageResultWidget(categoryTitle: widget.categoryTitle),
+            child: ImageList(
+              type: ImageTypeEnum.all,
+              categoryTitle: widget.categoryTitle,
+            ),
           ),
           KeepAliveWidget(
-            child: VideoResult(categoryTitle: widget.categoryTitle),
+            child: VideoList(
+              type: VideoTypeEnum.all,
+              categoryTitle: widget.categoryTitle,
+            ),
           ),
         ],
       ),

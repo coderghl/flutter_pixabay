@@ -18,7 +18,7 @@ class VideoDetailsPage extends StatefulWidget {
 }
 
 class _VideoDetailsPageState extends State<VideoDetailsPage> {
-  DownloadApi _downloadApi = DownloadApi();
+  final DownloadApi _downloadApi = DownloadApi();
 
   @override
   Widget build(BuildContext context) {

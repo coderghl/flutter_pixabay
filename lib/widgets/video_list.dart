@@ -5,6 +5,7 @@ import 'package:flutter_pixabay/enum/video_order_enum.dart';
 import 'package:flutter_pixabay/enum/video_type_enum.dart';
 import 'package:flutter_pixabay/pages/video_details/video_details_page.dart';
 import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
+import 'package:flutter_pixabay/utils/constants.dart';
 import 'package:flutter_pixabay/utils/network/api/video_api.dart';
 import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 
@@ -21,21 +22,23 @@ class VideoList extends StatefulWidget {
   final VideoOrderEnum order;
   String categoryTitle;
   String keyWords;
+
   @override
   State<VideoList> createState() => _VideoListState();
 }
 
 class _VideoListState extends State<VideoList> {
-  late VideoPageEntity pageEntity;
+  late VideoPageEntity pageData;
 
   VideoApi api = VideoApi();
+
+  int _page = 1;
+  int _totalPages = 0;
   bool dataIsReady = false;
   bool dataIsError = false;
   bool isLoadMore = false;
   bool isHaveData = false;
-
-  int page = 1;
-
+  bool searchResultEqualZero = false;
   String errorText = "";
 
   @override
@@ -48,30 +51,40 @@ class _VideoListState extends State<VideoList> {
     dataIsReady = false;
     dataIsError = false;
     isHaveData = false;
-    page = 1;
+    searchResultEqualZero = false;
+    _page = 1;
     setState(() {});
     request();
   }
 
-  void loadMore() {
+  void loadMore() async {
     if (!isLoadMore) return;
-    page++;
-    request();
+    if (_page < _totalPages) {
+      _page++;
+      await request();
+    }
   }
 
-  void request() {
+  Future<void> request() async {
     api.getVideo(
-      page: page,
+      page: _page,
       order: widget.order,
       keyWords: widget.keyWords,
       category: widget.categoryTitle,
       type: widget.type,
       successCallback: (data) {
         if (isHaveData) {
-          pageEntity.hits.addAll(VideoPageEntity.fromJson(data).hits);
+          pageData.hits.addAll(VideoPageEntity.fromJson(data).hits);
         } else {
-          pageEntity = VideoPageEntity.fromJson(data);
+          pageData = VideoPageEntity.fromJson(data);
         }
+
+        _totalPages = (pageData.total + kPerPage - 1) ~/ kPerPage;
+
+        if (_totalPages == 0) {
+          searchResultEqualZero = true;
+        }
+
         isHaveData = true;
         dataIsReady = true;
         setState(() {});
@@ -109,7 +122,11 @@ class _VideoListState extends State<VideoList> {
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 400),
                   child: dataIsReady
-                      ? _buildContent()
+                      ? searchResultEqualZero
+                          ? const Center(
+                              child: Text("No results found for your search"),
+                            )
+                          : _buildContent()
                       : const CircularProgressIndicator(),
                 ),
               ),
@@ -119,9 +136,9 @@ class _VideoListState extends State<VideoList> {
 
   Widget _buildContent() {
     return ListView.builder(
-      itemCount: pageEntity.hits.length + 1,
+      itemCount: pageData.hits.length + 1,
       itemBuilder: (context, index) {
-        if (pageEntity.hits.length == index) {
+        if (pageData.hits.length == index) {
           isLoadMore = true;
           loadMore();
           return const Padding(
@@ -129,7 +146,7 @@ class _VideoListState extends State<VideoList> {
             child: Center(child: CircularProgressIndicator()),
           );
         }
-        var item = pageEntity.hits[index];
+        var item = pageData.hits[index];
         return _buildItem(item);
       },
     );

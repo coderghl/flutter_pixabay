@@ -5,6 +5,7 @@ import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/enum/image_type_enum.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
+import 'package:flutter_pixabay/utils/constants.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -28,14 +29,16 @@ class ImageList extends StatefulWidget {
 
 class _ImageListState extends State<ImageList> {
   late ImagePageEntity pageData;
+
   final ImageApi _api = ImageApi();
 
   int _page = 1;
+  int _totalPages = 0;
   bool isHaveData = false;
   bool dataIsError = false;
   bool dataIsReady = false;
   bool isLoadMore = false;
-
+  bool searchResultEqualZero = false;
   String errorText = "";
 
   @override
@@ -56,18 +59,21 @@ class _ImageListState extends State<ImageList> {
     dataIsError = false;
     dataIsReady = false;
     isHaveData = false;
+    searchResultEqualZero = false;
     _page = 1;
     setState(() {});
     request();
   }
 
-  void loadMore() {
+  void loadMore() async {
     if (!isLoadMore) return;
-    _page++;
-    request();
+    if (_page < _totalPages) {
+      _page++;
+      await request();
+    }
   }
 
-  void request() {
+  Future<void> request() async {
     _api.getImage(
       page: _page,
       order: widget.order,
@@ -80,6 +86,12 @@ class _ImageListState extends State<ImageList> {
               .addAll(ImagePageEntity.fromJson(data).imageEntityList);
         } else {
           pageData = ImagePageEntity.fromJson(data);
+        }
+
+        _totalPages = (pageData.total + kPerPage - 1) ~/ kPerPage;
+
+        if (_totalPages == 0) {
+          searchResultEqualZero = true;
         }
 
         isHaveData = true;
@@ -108,24 +120,28 @@ class _ImageListState extends State<ImageList> {
                 reTry: () => getImage(),
               )
             : dataIsReady
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: MasonryGridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 8,
-                      itemCount: pageData.imageEntityList.length + 1,
-                      itemBuilder: (context, index) {
-                        if (pageData.imageEntityList.length == index) {
-                          isLoadMore = true;
-                          loadMore();
-                          return const SizedBox();
-                        }
-                        var data = pageData.imageEntityList[index];
-                        return _buildItem(data, index);
-                      },
-                    ),
-                  )
+                ? searchResultEqualZero
+                    ? const Center(
+                        child: Text("No results found for your search"),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: MasonryGridView.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 8,
+                          itemCount: pageData.imageEntityList.length + 1,
+                          itemBuilder: (context, index) {
+                            if (pageData.imageEntityList.length == index) {
+                              isLoadMore = true;
+                              loadMore();
+                              return const SizedBox();
+                            }
+                            var data = pageData.imageEntityList[index];
+                            return _buildItem(data, index);
+                          },
+                        ),
+                      )
                 : const Center(child: CircularProgressIndicator()),
       ),
     );

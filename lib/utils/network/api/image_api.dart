@@ -1,5 +1,6 @@
 import 'package:flutter_pixabay/enum/image_order_enum.dart';
 import 'package:flutter_pixabay/enum/image_type_enum.dart';
+import 'package:flutter_pixabay/utils/constants.dart';
 import 'package:flutter_pixabay/utils/network/http/http.dart';
 
 class ImageApi {
@@ -21,6 +22,7 @@ class ImageApi {
     path += "&image_type=$resultType";
     path += "&order=$resultOrder";
     path += "&page=$page";
+    path += "&per_page=$kPerPage";
 
     Http().request(
       path: path,
