@@ -61,7 +61,7 @@ class _ImageListState extends State<ImageList> {
     isHaveData = false;
     searchResultEqualZero = false;
     _page = 1;
-    setState(() {});
+    if (mounted) setState(() {});
     request();
   }
 
@@ -97,13 +97,13 @@ class _ImageListState extends State<ImageList> {
         isHaveData = true;
         isLoadMore = false;
         dataIsReady = true;
-        setState(() {});
+        if (mounted) setState(() {});
       },
       errorCallback: (error) {
         dataIsError = true;
         isHaveData = false;
         errorText = error;
-        setState(() {});
+        if (mounted) setState(() {});
       },
     );
   }

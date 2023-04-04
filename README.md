@@ -16,6 +16,7 @@
 1. [x] Image Page
 3. [x] Video Page
 4. [x] Search Page
+   1. [x] History
 5. [x] Category Page
 6. [ ] Setting Page
     1. [x] Theme Page
@@ -35,7 +36,7 @@
 8. [x] Video Details Page
     1. [x] Download Video
     2. [x] Video Play
-9. [x] Network State
+9.  [x] Network State
 
 # Dependencies
 
@@ -58,3 +59,5 @@
 [path_provider: ^2.0.14](https://pub.dev/packages/path_provider)
 
 [permission_handler: ^10.2.0](https://pub.dev/packages/permission_handler)
+
+[hive: ^2.2.3](https://pub.dev/packages/hive)

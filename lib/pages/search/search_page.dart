@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/pages/search/widgets/search_history_widget.dart';
 import 'package:flutter_pixabay/pages/search/widgets/search_result_widget.dart';
+import 'package:flutter_pixabay/utils/database/search_box.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -28,20 +29,21 @@ class _SearchPageState extends State<SearchPage> {
   void _handelSearch() {
     if (_searchController.text.isEmpty) return;
     isSearch = true;
-    setState(() {});
+    SearchBox().addKeyWord(_searchController.text.trim());
+    if (mounted) setState(() {});
   }
 
   void _cancelSearch() {
     _searchController.clear();
     isSearch = false;
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void _responseSearchTextFieldChange(value) {
     if (_searchController.text.isEmpty) {
       _cancelSearch();
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -52,10 +54,13 @@ class _SearchPageState extends State<SearchPage> {
         duration: const Duration(milliseconds: 400),
         child: isSearch
             ? SearchResultWidget(
-                keyWords: _searchController.text,
+                keyWords: _searchController.text.trim(),
               )
             : SearchHistoryWidget(
-                callback: (String value) {},
+                callback: (String value) {
+                  _searchController.text = value;
+                  _handelSearch();
+                },
               ),
       ),
     );

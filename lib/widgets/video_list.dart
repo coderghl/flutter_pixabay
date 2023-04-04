@@ -53,7 +53,7 @@ class _VideoListState extends State<VideoList> {
     isHaveData = false;
     searchResultEqualZero = false;
     _page = 1;
-    setState(() {});
+    if (mounted) setState(() {});
     request();
   }
 
@@ -87,13 +87,13 @@ class _VideoListState extends State<VideoList> {
 
         isHaveData = true;
         dataIsReady = true;
-        setState(() {});
+        if (mounted) setState(() {});
       },
       errorCallback: (error) {
         dataIsError = true;
         isHaveData = false;
         errorText = error;
-        setState(() {});
+        if (mounted) setState(() {});
       },
     );
   }

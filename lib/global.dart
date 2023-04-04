@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_pixabay/utils/database/app_database.dart';
 import 'package:flutter_pixabay/utils/network/http/http.dart';
 import 'package:flutter_pixabay/utils/shared_preferences/shared_preferences_util.dart';
 
@@ -11,6 +12,7 @@ class Global {
     WidgetsFlutterBinding.ensureInitialized();
 
     Http();
+    await AppDatabase.init();
     await SharedPreferencesUtil.init();
 
     await appTheme.initTheme();
