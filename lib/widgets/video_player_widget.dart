@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pixabay/entity/video_entity.dart';
 import 'package:flutter_pixabay/widgets/video_player_control_pad.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   const VideoPlayerWidget({
     super.key,
-    required this.url,
+    required this.data,
   });
 
-  final String url;
+  final VideoEntity data;
 
   @override
   State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
@@ -20,13 +21,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void initState() {
-    _controller = VideoPlayerController.network(widget.url)
-      ..initialize().then((_) {
-        // 播放视频
+    print(widget.data.videos.tiny.url);
+    _controller = VideoPlayerController.network(
+      widget.data.videos.tiny.url,
+    )..initialize().then((_) {
         _controller.play();
-        // 循环播放
-        _controller.setLooping(true);
-        // 更新页面状态
         setState(() {
           _isInitialized = true;
         });
@@ -54,7 +53,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 ),
               ],
             )
-          : const ColoredBox(color: Colors.black),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

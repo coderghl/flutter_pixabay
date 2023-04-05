@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/category_label_entity.dart';
 import 'package:flutter_pixabay/pages/category_details/category_details_page.dart';
+import 'package:flutter_pixabay/utils/extended.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -70,11 +71,6 @@ class _CategoryPageState extends State<CategoryPage> {
     );
   }
 
-  void _handelItemOnTap(String categoryTitle) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              CategoryDetailsPage(categoryTitle: categoryTitle),
-        ),
-      );
+  void _handelItemOnTap(String categoryTitle) =>
+      context.push(CategoryDetailsPage(categoryTitle: categoryTitle));
 }

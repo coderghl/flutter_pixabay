@@ -6,6 +6,7 @@ import 'package:flutter_pixabay/enum/image_type_enum.dart';
 import 'package:flutter_pixabay/pages/image_details/image_details_page.dart';
 import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
 import 'package:flutter_pixabay/utils/constants.dart';
+import 'package:flutter_pixabay/utils/extended.dart';
 import 'package:flutter_pixabay/utils/network/api/image_api.dart';
 import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -152,17 +153,12 @@ class _ImageListState extends State<ImageList> {
     int index,
   ) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ImageDetailsPage(
-              data: pageData.imageEntityList,
-              index: index,
-            ),
-          ),
-        );
-      },
+      onTap: () => context.push(
+        ImageDetailsPage(
+          data: pageData.imageEntityList,
+          index: index,
+        ),
+      ),
       child: Hero(
         tag: data.webformatUrl,
         child: ExtendedImage.network(

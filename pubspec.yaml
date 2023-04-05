@@ -49,7 +49,7 @@ dependencies:
   # media Download
   image_gallery_saver: ^1.7.1
   # Video Play
-  video_player: ^2.6.0
+  video_player: ^2.6.1
   # Extended Image
   extended_image: ^7.0.2
   # Get local file path

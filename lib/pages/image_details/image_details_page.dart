@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/image_entity.dart';
+import 'package:flutter_pixabay/utils/extended.dart';
 import 'package:flutter_pixabay/utils/network/api/download_api.dart';
 
 class ImageDetailsPage extends StatefulWidget {
@@ -47,14 +48,13 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   }
 
   void _handelDownload() async {
+    context.showMessage("Start download");
     bool result =
         await api.downloadImage(url: widget.data[_index].largeImageUrl);
     if (result) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Download success")));
+      context.showMessage("Download success");
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Download fail")));
+      context.showMessage("Download fail");
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_pixabay/enum/video_order_enum.dart';
 import 'package:flutter_pixabay/pages/search/search_page.dart';
 import 'package:flutter_pixabay/pages/video/widget/video_tab_page_widget.dart';
 import 'package:flutter_pixabay/provider/video_order_provider.dart';
+import 'package:flutter_pixabay/utils/extended.dart';
 import 'package:flutter_pixabay/widgets/keep_alive_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -115,12 +116,5 @@ class _VideoPageState extends State<VideoPage>
     setState(() {});
   }
 
-  void _handelGotoSearchPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SearchPage(),
-      ),
-    );
-  }
+  void _handelGotoSearchPage() => context.push(const SearchPage());
 }

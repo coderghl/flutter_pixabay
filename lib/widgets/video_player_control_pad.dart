@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/widgets/vidoe_player_full_screen_widget.dart';
 import 'package:video_player/video_player.dart';
@@ -17,6 +19,8 @@ class VideoPlayerControlPad extends StatefulWidget {
 }
 
 class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
+  Timer? _timer;
+
   bool _showControlPad = false;
   bool _isPlaying = true;
   Duration _duration = const Duration();
@@ -27,6 +31,13 @@ class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
   void initState() {
     _init();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _timer = null;
+    super.dispose();
   }
 
   void _init() {
@@ -94,7 +105,7 @@ class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
         ),
         child: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             color: Colors.white,
           ),
@@ -170,6 +181,13 @@ class _VideoPlayerControlPadState extends State<VideoPlayerControlPad> {
   void _onTap() {
     setState(() {
       _showControlPad = !_showControlPad;
+      _timer?.cancel();
+      _timer = Timer(const Duration(seconds: 3), () {
+        setState(() {
+          debugPrint("hide");
+          _showControlPad = false;
+        });
+      });
     });
   }
 

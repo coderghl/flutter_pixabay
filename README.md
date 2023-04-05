@@ -18,25 +18,37 @@
 4. [x] Search Page
    1. [x] History
 5. [x] Category Page
-6. [ ] Setting Page
+6. [x] Category Details Page 
+7. [ ] Setting Page
     1. [x] Theme Page
         1. [x] Toggle Theme Mode
         2. [x] Select Theme Color
-    2. [ ] About Page
-    3. [ ] Cache Page
+    2. [x] About Page
+    3. [x] Privacy Page 
+    4. [ ] Cache Page
         1. [ ] Toggle Cache (Default Open)
-    4. [ ] Feedback Page
+    5. [ ] Feedback Page
         1. [ ] Send Email
-    5. [ ] Sponsor Page
+    6. [ ] Sponsor Page
         1. [ ] QRcode
-7. [ ] Image Details Page
+8. [x] Image Details Page
     1. [x] Download Image
     2. [x] Origin Image
-    3. [ ] Set Wallpaper
-8. [x] Video Details Page
+9. [x] Video Details Page
     1. [x] Download Video
     2. [x] Video Play
-9.  [x] Network State
+
+# App Screenshot
+
+### ImageList
+![](./screenshot/image_list.png)
+### VideoList
+![](./screenshot/video_list.png)
+### SearchPage
+![](./screenshot/search_page.png)
+### CategoryPage
+![](./screenshot/category_page.png)
+
 
 # Dependencies
 

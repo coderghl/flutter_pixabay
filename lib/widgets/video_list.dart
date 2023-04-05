@@ -6,6 +6,7 @@ import 'package:flutter_pixabay/enum/video_type_enum.dart';
 import 'package:flutter_pixabay/pages/video_details/video_details_page.dart';
 import 'package:flutter_pixabay/skeleton/skeleton_container.dart';
 import 'package:flutter_pixabay/utils/constants.dart';
+import 'package:flutter_pixabay/utils/extended.dart';
 import 'package:flutter_pixabay/utils/network/api/video_api.dart';
 import 'package:flutter_pixabay/widgets/network_error_widget.dart';
 
@@ -181,12 +182,6 @@ class _VideoListState extends State<VideoList> {
     );
   }
 
-  void _handelOnTap(VideoEntity data) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VideoDetailsPage(data: data),
-      ),
-    );
-  }
+  void _handelOnTap(VideoEntity data) =>
+      context.push(VideoDetailsPage(data: data));
 }

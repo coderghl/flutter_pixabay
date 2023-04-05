@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/entity/video_entity.dart';
+import 'package:flutter_pixabay/utils/extended.dart';
 import 'package:flutter_pixabay/utils/network/api/download_api.dart';
 import 'package:flutter_pixabay/utils/permission/permission_util.dart';
 import 'package:flutter_pixabay/widgets/video_player_widget.dart';
@@ -25,12 +26,15 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.share_rounded)),
+          IconButton(
+            onPressed: _handelShare,
+            icon: const Icon(Icons.share_rounded),
+          ),
         ],
       ),
       body: Column(
         children: [
-          VideoPlayerWidget(url: widget.data.videos.medium.url),
+          VideoPlayerWidget(data: widget.data),
           const SizedBox(height: 14),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -104,9 +108,9 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
   /// 1. check permission
   /// 2. download
   void _permissionCheckBeforeDownload(String url) async {
-    // 1.
     bool isPermission =
         await PermissionUtil.checkPermission(Permission.storage);
+
     if (isPermission) {
       _handelDownload(url);
     } else {
@@ -115,17 +119,18 @@ class _VideoDetailsPageState extends State<VideoDetailsPage> {
       if (requestResult) {
         _handelDownload(url);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                "Permissions must be granted to download the video to your phone"),
-          ),
+        context.showMessage(
+          "Permissions must be granted to download the video to your phone",
+          duration: Duration(seconds: 5),
         );
       }
     }
   }
 
   void _handelDownload(String url) async {
+    context.showMessage("Start download");
     _downloadApi.downloadVideo(url: url);
   }
+
+  void _handelShare() {}
 }
