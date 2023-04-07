@@ -19,6 +19,7 @@ class ImagePage extends StatefulWidget {
 class _ImagePageState extends State<ImagePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late ScrollController _scrollController;
 
   ImageOrderProvider imageOrderProvider = ImageOrderProvider();
 
@@ -29,36 +30,46 @@ class _ImagePageState extends State<ImagePage>
       length: imageTypeList.length,
       vsync: this,
     );
+    _scrollController = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExtendedNestedScrollView(
-      onlyOneScrollInBody: true,
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            title: const Text("Image"),
-            bottom: _buildTabBar(),
-            actions: [
-              _buildSearchBtn(),
-              _buildPopupMenu(),
-            ],
-          ),
-        ];
-      },
-      body: ChangeNotifierProvider<ImageOrderProvider>.value(
-        value: imageOrderProvider,
-        builder: (context, child) => _buildTabBarView(),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: UniqueKey(),
+        onPressed: _handelBackTop,
+        child: const Icon(Icons.arrow_upward_rounded),
+      ),
+      body: ExtendedNestedScrollView(
+        controller: _scrollController,
+        onlyOneScrollInBody: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              title: const Text("Image"),
+              bottom: _buildTabBar(),
+              actions: [
+                _buildSearchBtn(),
+                _buildPopupMenu(),
+              ],
+            ),
+          ];
+        },
+        body: ChangeNotifierProvider<ImageOrderProvider>.value(
+          value: imageOrderProvider,
+          builder: (context, child) => _buildTabBarView(),
+        ),
       ),
     );
   }
@@ -118,6 +129,14 @@ class _ImagePageState extends State<ImagePage>
           ];
         },
       );
+
+  void _handelBackTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
+  }
 
   void _handelSortType(ImageOrderEnum newOrder) {
     imageOrderProvider.setOrder(newOrder);

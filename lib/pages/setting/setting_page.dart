@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pixabay/pages/app_about/app_about_page.dart';
+import 'package:flutter_pixabay/pages/cache/cache_page.dart';
 import 'package:flutter_pixabay/pages/privacy/privacy_page.dart';
 import 'package:flutter_pixabay/pages/theme/app_theme_page.dart';
 import 'package:flutter_pixabay/widgets/list_tile_m3_widget.dart';
@@ -55,6 +56,17 @@ class SettingPage extends StatelessWidget {
               leading: const Icon(Icons.privacy_tip_outlined),
               trailing: const Icon(Icons.keyboard_arrow_right_rounded),
               title: const Text("Privacy"),
+            ),
+            ListTileM3Widget(
+              onTap: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const CachePage(),
+                ),
+              ),
+              leading: const Icon(Icons.cached_rounded),
+              trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+              title: const Text("Cache"),
             ),
           ],
         ),

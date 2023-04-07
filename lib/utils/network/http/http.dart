@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_pixabay/utils/constants.dart';
+import 'package:flutter_pixabay/utils/network/interceport/cache/cache_interceptor.dart';
 
 enum RequestMethod { get, post, put, delete, patch, copy }
 
@@ -20,6 +21,7 @@ class Http {
     );
 
     _dio = Dio(options);
+    _dio.interceptors.add(CacheInterceptor());
   }
 
   void request({

@@ -19,6 +19,7 @@ class VideoPage extends StatefulWidget {
 class _VideoPageState extends State<VideoPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late ScrollController _scrollController;
 
   VideoOrderProvider videoOrderProvider = VideoOrderProvider();
 
@@ -29,35 +30,45 @@ class _VideoPageState extends State<VideoPage>
       length: videoTypeList.length,
       vsync: this,
     );
+    _scrollController = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExtendedNestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            title: const Text("Video"),
-            bottom: _buildTabBar(),
-            actions: [
-              _buildSearchBtn(),
-              _buildPopupMenu(),
-            ],
-          ),
-        ];
-      },
-      body: ChangeNotifierProvider<VideoOrderProvider>.value(
-        value: videoOrderProvider,
-        builder: (context, child) => _buildTabBarView(),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: UniqueKey(),
+        onPressed: _handelBackTop,
+        child: const Icon(Icons.arrow_upward_rounded),
+      ),
+      body: ExtendedNestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              title: const Text("Video"),
+              bottom: _buildTabBar(),
+              actions: [
+                _buildSearchBtn(),
+                _buildPopupMenu(),
+              ],
+            ),
+          ];
+        },
+        body: ChangeNotifierProvider<VideoOrderProvider>.value(
+          value: videoOrderProvider,
+          builder: (context, child) => _buildTabBarView(),
+        ),
       ),
     );
   }
@@ -114,6 +125,14 @@ class _VideoPageState extends State<VideoPage>
   void _handelSortType(VideoOrderEnum newOrder) {
     videoOrderProvider.setOrder(newOrder);
     setState(() {});
+  }
+
+  void _handelBackTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
   }
 
   void _handelGotoSearchPage() => context.push(const SearchPage());
